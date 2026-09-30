@@ -58,6 +58,15 @@ export function Hero() {
             }}
           >
             {identity.name}
+            <span
+              aria-hidden="true"
+              style={{
+                color: "var(--pass)",
+                animation: "ssBlink 1.1s steps(1) infinite",
+              }}
+            >
+              ▍
+            </span>
           </h1>
 
           <p
@@ -71,8 +80,15 @@ export function Hero() {
               maxWidth: "18ch",
             }}
           >
-            {identity.taglineLead}{" "}
-            <span style={{ color: "var(--pass)", fontStyle: "var(--accent-style)" }}>
+            {identity.taglineLead}
+            <br />
+            <span
+              style={{
+                color: "var(--pass)",
+                fontStyle: "var(--accent-style)",
+                whiteSpace: "nowrap",
+              }}
+            >
               {identity.taglineAccent}
             </span>
           </p>
