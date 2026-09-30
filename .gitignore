@@ -45,3 +45,7 @@ next-env.d.ts
 # private chatbot source documents (RAG) — NEVER commit the raw files
 /sources/*
 !/sources/README.md
+
+# cloudflare / opennext build artifacts
+.open-next/
+.wrangler/
