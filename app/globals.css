@@ -1,0 +1,363 @@
+@import "tailwindcss";
+
+/* ───────────────────────────── Design tokens ─────────────────────────────
+   Claude Design "Instrument" palette, per the confirmed handoff tweaks
+   (displayMode: technical · intensity: calm · metricStyle: pill).
+   Theme is set via the data-theme attribute on <html> (next-themes). Dark is
+   the default — :root carries the dark + font tokens so they apply pre-hydration
+   and font tokens persist into light (which only overrides the palette).
+   --display + --accent-style stay tokens so the editorial-serif / italic-accent
+   treatment can be swapped per theme without touching markup. --scan is the
+   scanline/console opacity knob (a number, not a color).
+--------------------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  /* fonts (self-hosted via next/font, injected as variables in layout.tsx) */
+  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-grotesk: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", monospace;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  /* Display = Space Grotesk (technical mode), accent upright.
+     Swap --display to var(--font-display) + --accent-style: italic for the
+     editorial Instrument-Serif treatment — no markup changes needed. */
+  --display: var(--font-grotesk);
+  --accent-style: normal;
+  --scan: 0.05;
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #0b0f17;
+  --surface: #121826;
+  --surface-2: #161d2e;
+  --rail: #0e1422;
+  --line: #1f2a3c;
+
+  /* brand + signal */
+  --brand: #2163ca;
+  --brand-soft: #3b82f6;
+  --pass: #2fa75a;
+
+  /* text */
+  --text-hi: #e8ecf3;
+  --text-lo: #9aa7bd;
+
+  /* pointer glow (CursorGlow) */
+  --glow: color-mix(in srgb, var(--brand-soft) 20%, transparent);
+  --glow-hot: color-mix(in srgb, var(--brand-soft) 25%, transparent);
+}
+
+[data-theme="light"] {
+  --scan: 0.04;
+  color-scheme: light;
+
+  --bg: #f4f5f2;
+  --surface: #ffffff;
+  --surface-2: #f0f1ec;
+  --rail: #edeee8;
+  --line: #dddfd6;
+
+  --brand: #1e5bb8;
+  --brand-soft: #2163ca;
+  --pass: #1f8a47;
+
+  --text-hi: #14181f;
+  --text-lo: #5a6577;
+
+  /* light ground takes far less light before it turns muddy */
+  --glow: color-mix(in srgb, var(--brand) 11%, transparent);
+  --glow-hot: color-mix(in srgb, var(--brand) 16%, transparent);
+}
+
+/* ─────────────────────────── Pointer ───────────────────────────
+   Custom cursor ART, not a custom cursor IMPLEMENTATION. These are CSS
+   cursor images, so the OS compositor still paints them and they cannot
+   lag the way a JS-drawn dot does. Every rule ends in a real keyword
+   fallback (auto / pointer / text), so a browser that refuses SVG cursors
+   (Safari has been patchy for years) degrades to the normal cursor rather
+   than to nothing. Two sets, because a light arrow vanishes on a light page.
+   Fine pointers only: touch never sees any of it.
+--------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'><path d='M2.5 1.5L2.5 16.2L6.5 12.5L9.2 18.4L12.2 17L9.5 11.2L15.2 11.2Z' fill='%23e8ecf3' stroke='%230b0f17' stroke-width='1.4' stroke-linejoin='round'/></svg>") 2 1, auto;
+  }
+
+  /* prose keeps its I-beam: an explicit body cursor would otherwise inherit
+     down over every sentence and hide that the text is selectable */
+  p, h1, h2, h3, h4, h5, h6, li, blockquote, td, th, input, textarea, code, pre {
+    cursor: text;
+  }
+
+  /* Interactive gets the stock system hand, no custom art. The glow does the
+     signalling now (see .cursor-glow-core[data-hot]). Buttons default to an
+     arrow in most browsers, so this rule is doing real work, not restating a
+     default. It wins over the prose rule above by source order. */
+  a, button, [role="button"], summary, select, label[for] {
+    cursor: pointer;
+  }
+
+  [data-theme="light"] body {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'><path d='M2.5 1.5L2.5 16.2L6.5 12.5L9.2 18.4L12.2 17L9.5 11.2L15.2 11.2Z' fill='%2314181f' stroke='%23f4f5f2' stroke-width='1.4' stroke-linejoin='round'/></svg>") 2 1, auto;
+  }
+}
+
+/* ── pointer glow ──────────────────────────────────────────────────────────
+   Position lives on the wrapper and is written straight from the mousemove
+   event, so the light sits exactly under the cursor with nothing to catch up
+   on. Scale and pulse live on the child, so the hover animation never fights
+   the position transform.
+--------------------------------------------------------------------------- */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s ease;
+  will-change: transform;
+}
+/* The resting light. The brighter one is a second layer stacked on top rather
+   than a swapped background, because background-image does not transition:
+   changing the gradient in place snaps, however long you set the duration.
+   Cross-fading two layers gives a real ramp. */
+.cursor-glow-core {
+  position: relative;
+  width: 440px;
+  height: 440px;
+  margin: -220px 0 0 -220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+  transition: transform .6s cubic-bezier(.25, .8, .25, 1);
+  will-change: transform;
+}
+.cursor-glow-core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-hot) 0%, transparent 72%);
+  opacity: 0;
+  transition: opacity .6s cubic-bezier(.25, .8, .25, 1);
+  will-change: opacity;
+}
+
+/* Over something clickable the light eases up to its brighter level and stays
+   there for as long as the pointer does, then eases back down on the way out.
+   No loop: a repeating pulse reads as an alert, and this is only meant to say
+   "this one is clickable". */
+.cursor-glow-core[data-hot="true"] {
+  transform: scale(1.22);
+}
+.cursor-glow-core[data-hot="true"]::after {
+  opacity: 1;
+}
+
+/* ───────────────────────────── Base ───────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-hi);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+::selection {
+  background: rgba(33, 99, 202, 0.3);
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ───────────────────────────── Keyframes ───────────────────────────── */
+@keyframes ssPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+@keyframes ssBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes ssRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ssMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes ssChat {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ───────────────────────────── Theme view-transition ─────────────────────────────
+   Circular reveal on theme toggle. The JS animates ::view-transition-new(root).
+--------------------------------------------------------------------------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 0;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* ───────────────────────────── Hover / focus states ─────────────────────────────
+   The design prototype used a `style-hover` directive; these are the real
+   CSS equivalents. Transitions are declared inline on the elements.
+--------------------------------------------------------------------------- */
+.h-navlink:hover { color: var(--text-hi); background: var(--surface); }
+.h-pillbtn:hover { color: var(--text-hi); border-color: var(--brand); }
+.h-primary:hover { background: var(--brand-soft); transform: translateY(-1px); }
+.h-primaryflat:hover { background: var(--brand-soft); }
+.h-ghost:hover { border-color: var(--brand); }
+.h-social:hover { color: var(--text-hi); border-color: var(--brand); }
+.h-company:hover { color: var(--brand-soft); }
+.h-card:hover {
+  border-color: color-mix(in srgb, var(--brand) 55%, var(--line));
+  transform: translateY(-2px);
+}
+.h-chip:hover { border-color: var(--brand); }
+.h-toggle:hover { color: var(--text-hi); }
+.h-projectlink:hover { color: var(--text-hi); }
+.h-contact-social:hover { border-color: var(--brand); color: var(--brand-soft); }
+.h-launcher:hover { transform: translateY(-2px); border-color: var(--brand); }
+.h-suggestion:hover { border-color: var(--brand); background: var(--surface-2); }
+.h-send:hover { background: var(--brand-soft); }
+.h-close:hover { color: var(--text-hi); }
+.chat-input:focus { border-color: var(--brand); }
+.chat-input::placeholder { color: var(--text-lo); }
+
+/* ───────────────────────────── Responsive layout ─────────────────────────────
+   The Claude Design canvas is desktop. These rules carry it down to 320px.
+--------------------------------------------------------------------------- */
+.metrics-grid { grid-template-columns: repeat(3, 1fr); }
+.projects-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.work-row { grid-template-columns: 160px 1fr; }
+.skill-row { grid-template-columns: 220px 1fr; }
+.stack-bottom { grid-template-columns: 1.4fr 1fr; }
+.areas-grid { grid-template-columns: 1fr 1fr; }
+
+/* ── Nav: desktop links vs mobile hamburger ── */
+.nav-desktop { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.nav-mobile { display: none; margin-left: auto; }
+
+.hamburger {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px; width: 40px; height: 40px; padding: 0;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.hamburger span {
+  display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text-hi);
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1), opacity .2s;
+}
+.hamburger.is-x span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.is-x span:nth-child(2) { opacity: 0; }
+.hamburger.is-x span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* full-screen mobile menu */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 80;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 20px
+           calc(env(safe-area-inset-bottom, 0px) + 24px);
+  opacity: 0; visibility: hidden; transform: translateY(-10px);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.4, 0, .2, 1),
+              visibility 0s linear .3s;
+}
+.mobile-menu[data-open="true"] {
+  opacity: 1; visibility: visible; transform: translateY(0);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.4, 0, .2, 1);
+}
+.mobile-menu-top {
+  display: flex; align-items: center; justify-content: space-between; height: 50px;
+}
+.mobile-menu-brand {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--text-lo);
+}
+.mobile-menu-links { display: flex; flex-direction: column; margin-top: 20px; }
+.mobile-menu-links a {
+  display: flex; align-items: baseline; gap: 14px; padding: 18px 4px;
+  border-top: 1px solid var(--line);
+  font-family: var(--display); font-size: clamp(30px, 9vw, 40px); font-weight: 400;
+  letter-spacing: -.01em; color: var(--text-hi); text-decoration: none;
+  opacity: 0; transform: translateX(-14px);
+  transition: opacity .4s ease, transform .45s cubic-bezier(.4, 0, .2, 1), color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-menu[data-open="true"] .mobile-menu-links a { opacity: 1; transform: translateX(0); }
+.mobile-menu-links a:active { color: var(--brand-soft); }
+.mobile-menu-links .idx { font-family: var(--font-mono); font-size: 13px; color: var(--brand-soft); }
+.mobile-menu-links .arrow { margin-left: auto; font-size: 18px; color: var(--text-lo); }
+
+.mobile-menu-actions {
+  margin-top: auto; display: flex; flex-direction: column; gap: 16px; padding-top: 24px;
+}
+.mobile-cta {
+  display: inline-flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 22px; border-radius: 999px;
+  background: var(--brand); color: #fff; font-size: 15px; font-weight: 500;
+  text-decoration: none; -webkit-tap-highlight-color: transparent;
+}
+.mobile-cta:active { background: var(--brand-soft); }
+.mobile-menu-row { display: flex; align-items: center; gap: 12px; }
+.mobile-menu-socials { display: flex; align-items: center; gap: 12px; }
+
+@media (max-width: 860px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .stack-bottom { grid-template-columns: 1fr; gap: 36px; }
+}
+
+@media (max-width: 720px) {
+  .nav-desktop { display: none; }
+  .nav-mobile { display: flex; align-items: center; }
+  .projects-cols { flex-direction: column; }
+}
+
+@media (max-width: 640px) {
+  .main-pad { padding-left: 20px; padding-right: 20px; }
+  .nav-pad { padding-left: 20px; padding-right: 20px; }
+  .work-row { grid-template-columns: 1fr; gap: 14px; }
+  .work-body { border-left: none; padding-left: 0; }
+  .skill-row { grid-template-columns: 1fr; gap: 10px; }
+  .areas-grid { grid-template-columns: 1fr; }
+  .hero-grid { gap: 36px; }
+  /* headline + rule on one line, the "see all" pill drops below it */
+  .section-head { flex-wrap: wrap; row-gap: 12px; }
+}
+
+@media (max-width: 420px) {
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Reduced motion: kill all animation/transition and let content render final. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
