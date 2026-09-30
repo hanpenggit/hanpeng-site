@@ -1,0 +1,86 @@
+{
+  "version": 3,
+  "middleware": {},
+  "sortedMiddleware": [],
+  "functions": {
+    "/api/chat/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "required-server-files.js",
+        "server/server-reference-manifest.js",
+        "server/app/api/chat/route_client-reference-manifest.js",
+        "server/edge/chunks/_next-internal_server_app_api_chat_route_actions_0uny0-k.js",
+        "server/edge/chunks/node_modules_next_dist_esm_1waa4l0._.js",
+        "server/edge/chunks/[root-of-the-server]__0ac1o0u._.js",
+        "server/edge/chunks/_14k_pm1._.js",
+        "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_1e58vb4.js"
+      ],
+      "name": "app/api/chat/route",
+      "page": "/api/chat/route",
+      "entrypoint": "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_1e58vb4.js",
+      "matchers": [
+        {
+          "regexp": "^/api/chat(?:/)?$",
+          "originalSource": "/api/chat"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "gyZh48EMpxX4iIw2fKX1Z",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "y0WPxsYLX0yNcEH5zspQXWrgKyfCwSnfd19QcPOpT/E=",
+        "__NEXT_PREVIEW_MODE_ID": "f9aab942a01791d9f84f15eaf9777e22",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "dfdacde7e609ab79d93464a8c50c5183fc87e70cebf1e0975388573621e44cb9",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "86914e67c99afc50d7df0e5f36a61527d0e56a09eb32ce6d0a6911223b851a4f"
+      }
+    },
+    "/opengraph-image/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "required-server-files.js",
+        "server/server-reference-manifest.js",
+        "server/app/opengraph-image/route_client-reference-manifest.js",
+        "server/edge/chunks/_next-internal_server_app_opengraph-image_route_actions_0as17aw.js",
+        "server/edge/chunks/node_modules_next_dist_esm_1e-gvrd._.js",
+        "server/edge/chunks/_17qrt0s._.js",
+        "server/edge/chunks/[root-of-the-server]__0ac1o0u._.js",
+        "server/edge/chunks/[root-of-the-server]__0167nzz._.js",
+        "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_094alng.js"
+      ],
+      "name": "app/opengraph-image/route",
+      "page": "/opengraph-image/route",
+      "entrypoint": "server/edge/chunks/turbopack-node_modules_next_dist_esm_build_templates_edge-wrapper_094alng.js",
+      "matchers": [
+        {
+          "regexp": "^/opengraph-image(?:/)?$",
+          "originalSource": "/opengraph-image"
+        }
+      ],
+      "wasm": [
+        {
+          "name": "wasm_10a187050363648b49a36c79d5266d2c",
+          "filePath": "server/edge/chunks/node_modules_next_dist_compiled_@vercel_og_yoga_0athij3.wasm"
+        },
+        {
+          "name": "wasm_151b7f7b511bd6dda63695d2c75c87a3",
+          "filePath": "server/edge/chunks/node_modules_next_dist_compiled_@vercel_og_resvg_0athij3.wasm"
+        }
+      ],
+      "assets": [
+        {
+          "name": "server/edge/assets/Geist-Regular.05-7db9wczy07.ttf",
+          "filePath": "server/edge/assets/Geist-Regular.05-7db9wczy07.ttf"
+        }
+      ],
+      "env": {
+        "__NEXT_BUILD_ID": "gyZh48EMpxX4iIw2fKX1Z",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "y0WPxsYLX0yNcEH5zspQXWrgKyfCwSnfd19QcPOpT/E=",
+        "__NEXT_PREVIEW_MODE_ID": "f9aab942a01791d9f84f15eaf9777e22",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "dfdacde7e609ab79d93464a8c50c5183fc87e70cebf1e0975388573621e44cb9",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "86914e67c99afc50d7df0e5f36a61527d0e56a09eb32ce6d0a6911223b851a4f"
+      }
+    }
+  }
+}
