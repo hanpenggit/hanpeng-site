@@ -1,106 +1,137 @@
 <div align="center">
 
-# sahilsapra.com
+# 韩鹏 · 个人网站
 
-**Personal site of Sahil Sapra — Technical Product Manager.**
-A fast, accessible portfolio with an AI chatbot that answers questions about my work — built like the release pipelines I manage: instrumented, evidence-backed, and green.
+**全栈开发工程师 & AI 工程师的个人站。** 单页作品集 + 一个只依据我真实资料回答问题的 AI 助手「问问 韩鹏」。
 
-[**Live**](https://sahilsapra.com) → [LinkedIn](https://www.linkedin.com/in/sahil-sapra/)
+[在线访问](https://me.hanpeng.xyz) · [族记（在做产品）](https://hanpeng.xyz) · 邮箱 hanpeng.jack@qq.com
 
 </div>
 
-## Overview
+## 概览
 
-A single-page Next.js portfolio presenting my experience, projects, skills, and certifications, plus **"Ask Sahil"** — an AI agent grounded strictly in my real profile data that recruiters and hiring managers can question directly. All site content lives in one JSON file, so the site stays trivial to update.
+Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全部来自 `content/profile.json`；通过 **OpenNext** 部署在 **Cloudflare Workers** 上。改内容只动那一个 JSON，页面和聊天机器人会一起更新。
 
-## Features
+## 特性
 
-- **Evidence-first experience timeline** — every accomplishment leads with a metric (75-customer zero-downtime migration, 68% latency reduction, QA coverage 62% → 81%, 400% release-frequency increase, and more), with a Work / Education toggle.
-- **Animated headline metrics** — count up on scroll into view; rendered instantly under `prefers-reduced-motion`.
-- **AI chatbot** — streaming answers via OpenRouter (any model, set by one env var), grounded only in `content/profile.json`, with per-IP rate limiting and hard cost caps. Off-topic prompts are politely declined and redirected to LinkedIn.
-- **Single source of truth** — edit `content/profile.json`; the UI and the chatbot both update.
-- **Book a call** — the primary contact CTA opens a Google Calendar booking page; the résumé opens as a PDF in a new tab.
-- **Privacy-friendly analytics** — page views plus a small fixed set of button-click events (no cookies, no third-party trackers).
-- **Dark / light themes** with an animated circular reveal on toggle, responsive down to 320px, WCAG-AA targeted, a custom pointer (desktop), and full `prefers-reduced-motion` support.
+- **内容单一数据源** —— `content/profile.json`：个人信息、经历、项目、技能、指标、机器人文案全在里面，改完不用碰组件代码。
+- **关于 / 经历 / 项目 / 技术栈 / 联系** 五个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
+- **「问问 韩鹏」AI 助手** —— 走 OpenRouter 流式输出，system prompt 只用 `profile.json` 的事实，按 IP 限流 + 长度/token 上限；未配密钥时优雅降级成邮箱引导。
+- **简历按钮** —— `public/resume.pdf`，可由 `npm run resume` 从 `profile.json` 重新生成，永远不会和网页内容脱节。
+- **隐私友好统计** —— Cloudflare Web Analytics（无 cookie、无需同意弹窗）看浏览量和 Core Web Vitals；按钮点击走自有的 `/api/event`，落在 Worker 日志里。
+- **深浅色主题**、圆形揭示动画、自定义指针、`prefers-reduced-motion` 全支持、320px 起响应式、中文有专门字体兜底。
+- **SEO** —— canonical / sitemap.xml / robots.txt / OG 图（含中文字体）/ Person JSON-LD，站点地址由 `meta.siteUrl` 一处控制。
 
-## Tech stack
+## 技术栈
 
 | | |
 |---|---|
-| Framework | Next.js 15 (App Router), React 19, TypeScript |
-| Styling | Tailwind CSS v4, CSS-variable design tokens, `next-themes` |
-| Fonts | `next/font` (self-hosted): Instrument Serif, Space Grotesk, JetBrains Mono, Inter |
-| Chatbot | OpenRouter (OpenAI-compatible streaming) via a server route handler — any model via one env var |
-| Rate limiting | Upstash Redis + `@upstash/ratelimit` |
-| Analytics | Vercel Web Analytics (page views + custom click events) |
-| Hosting | Vercel |
+| 框架 | Next.js 16（App Router）、React 19、TypeScript |
+| 样式 | Tailwind CSS v4 + CSS 变量设计令牌、`next-themes` |
+| 字体 | `next/font`（自托管）Instrument Serif / Space Grotesk / JetBrains Mono / Inter，中文回退 PingFang SC / 微软雅黑 / Noto Sans SC |
+| 聊天 | OpenRouter（OpenAI 兼容流式）经 Edge route handler |
+| 限流 | Upstash Redis + `@upstash/ratelimit`（10 条 / IP / 5 分钟） |
+| 检索（可选） | Upstash Vector，做私有文档的 RAG |
+| 统计 | Cloudflare Web Analytics + 自建 `/api/event` |
+| 部署 | Cloudflare Workers（`@opennextjs/cloudflare` + wrangler） |
 
-> **Why a direct OpenRouter fetch instead of the Vercel AI SDK?** The route streams from OpenRouter's OpenAI-compatible endpoint with a tiny, fully-owned `ReadableStream`. It keeps the dependency surface minimal and avoids the version-coupling between `ai` and `@openrouter/ai-sdk-provider`. Same behavior the PRD asks for: token-by-token streaming, grounded in `profile.json`, rate-limited, server-only key.
+> 为什么直接用 OpenRouter 的 fetch 而不是 Vercel AI SDK：路由里自己用 `ReadableStream` 拆 SSE，依赖面最小，也避免了 `ai` 与 provider 之间的版本耦合。行为一致：逐字流式、只依据 `profile.json`、限流、密钥只在服务端。
 
-## Getting started
+## 本地开发
 
 ```bash
-git clone https://github.com/sahilsapra391/sahilsapra-website.git
-cd sahilsapra-website
-pnpm install
-cp .env.example .env.local      # then fill in your keys (optional for local UI work)
-pnpm dev                        # http://localhost:3000
+git clone https://github.com/hanpenggit/hanpeng-site.git
+cd hanpeng-site
+npm install
+cp .env.example .env.local      # 本地 UI 开发可以不填
+npm run dev                     # http://localhost:3000
 ```
 
-The site runs fully without any env vars — the chatbot simply replies with a "reach me on LinkedIn / book a call" message until `OPENROUTER_API_KEY` is set. Rate limiting no-ops locally when the Upstash vars are absent.
+不配任何环境变量也能跑：只是聊天机器人会回「发邮件找我」，限流会空转。
 
-### Environment variables
+Windows 下也可以双击 `启动网站.bat`（用 `E:/devtools` 的 Node，端口 3026）。
 
-| Variable | Required | Purpose |
+### 环境变量
+
+| 变量 | 是否必须 | 用途 |
 |---|---|---|
-| `OPENROUTER_API_KEY` | for live chat | Chatbot model calls via OpenRouter (**server-only**) |
-| `OPENROUTER_MODEL` | optional | Model slug, e.g. `anthropic/claude-3.5-haiku`; defaults in code |
-| `UPSTASH_REDIS_REST_URL` | for rate limiting | Chatbot abuse protection (per-IP) |
-| `UPSTASH_REDIS_REST_TOKEN` | for rate limiting | Chatbot abuse protection (per-IP) |
-| `NEXT_PUBLIC_SITE_URL` | optional | Canonical URL for sitemap / robots / OG (defaults to `https://sahilsapra.com`) |
+| `OPENROUTER_API_KEY` | 线上聊天需要 | 机器人模型调用（**仅服务端**） |
+| `OPENROUTER_MODEL` | 可选 | 模型 slug，默认 `anthropic/claude-3.5-haiku` |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | 线上限流需要 | 按 IP 限流，防刷 |
+| `UPSTASH_VECTOR_REST_URL` / `_TOKEN` | 可选 | RAG 检索，没有就只用 profile.json |
+| `NEXT_PUBLIC_SITE_URL` | 建议 | canonical / sitemap / OG，不填则用 `meta.siteUrl` |
+| `NEXT_PUBLIC_CF_BEACON_TOKEN` | 可选 | Cloudflare Web Analytics，不填则不加载统计脚本 |
 
-`OPENROUTER_API_KEY` is read **server-side only** (in `app/api/chat/route.ts`) and never reaches the client bundle.
+`OPENROUTER_API_KEY` 只在 `app/api/chat/route.ts` 里读取，不会进浏览器包。
 
-## Updating content
-
-Edit **`content/profile.json`** — identity, experience, projects, skills, certifications, headline metrics, and chatbot copy all live there. The TypeScript types in `lib/types.ts` mirror its shape. No component edits required.
-
-## Scripts
+### 脚本
 
 ```bash
-pnpm dev         # local dev server
-pnpm build       # production build
-pnpm start       # serve the production build
-pnpm typecheck   # tsc --noEmit
-pnpm lint        # eslint
+npm run dev         # 本地开发
+npm run build       # 生产构建
+npm run build:cf    # 构建 Cloudflare Worker 产物（.open-next）
+npm run preview:cf  # 本地用 wrangler 预览 Worker
+npm run deploy:cf   # 部署到 Cloudflare
+npm run typecheck   # tsc --noEmit
+npm run lint        # eslint
+npm run resume      # 从 profile.json 重新生成 public/resume.pdf（需 python + reportlab）
 ```
 
-## Project structure
+## 改内容
+
+只改 **`content/profile.json`**：身份、经历、教育、项目、技能、专长、证书、头部指标、机器人文案、埋点事件清单都在里面，`lib/types.ts` 是其类型镜像。
+
+几个容易踩的点：
+
+- `meta.siteUrl` 是**本站在 Cloudflare 上的地址**（canonical / sitemap / OG / JSON-LD 都用它），和 `identity.links.website`（族记产品站）是两回事。
+- `identity.links.resume` 指向 `/resume.pdf`。换成你手做的简历就直接覆盖 `public/resume.pdf`；想保持同步就跑 `npm run resume`。
+- `education` / `certifications` 为空时对应区块会自动隐藏，填上就自动出现。
+- 聊天机器人开关：`chatbot.enabled`。
+
+## 部署（Cloudflare Workers）
+
+1. 首次在 Cloudflare 建好 Worker 资源后，**密钥用 wrangler 写入**（不会进仓库）：
+
+   ```bash
+   npx wrangler secret put OPENROUTER_API_KEY
+   npx wrangler secret put UPSTASH_REDIS_REST_URL
+   npx wrangler secret put UPSTASH_REDIS_REST_TOKEN
+   npx wrangler secret put UPSTASH_VECTOR_REST_URL     # 可选
+   npx wrangler secret put UPSTASH_VECTOR_REST_TOKEN   # 可选
+   ```
+
+2. 本地部署：`npm run build:cf && npm run deploy:cf`（wrangler 会读 `wrangler.jsonc`，Worker 名 `hanpeng-site`）。
+
+3. **CI 自动部署**：push 到 `main` 触发 `.github/workflows/deploy.yml`。在仓库 Settings 里配置 `CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID` 两个 secret，以及可选的变量 `NEXT_PUBLIC_SITE_URL`、`NEXT_PUBLIC_CF_BEACON_TOKEN`。
+
+4. 自定义域名：Cloudflare 面板 → Workers → `hanpeng-site` → Settings → Domains & Routes → 添加域名；然后把 `meta.siteUrl` 改成它。
+
+5. 看日志：面板 Workers → Logs，或 `npx wrangler tail`（`/api/event` 的点击事件会打印 `site_event`）。
+
+## 安全
+
+- API 密钥仅服务端读取，`.env*` 已 gitignore（只提交 `.env.example` 占位）。
+- 聊天接口：按 IP 限流、单条长度上限、`max_tokens` 上限、system prompt 严格限定于 `profile.json`。配合 OpenRouter 的消费上限使用。
+- 安全响应头（`X-Content-Type-Options`、`X-Frame-Options`、`Referrer-Policy`、`Permissions-Policy`）在 `next.config.ts` 里；HSTS 建议在 Cloudflare 面板开启。
+
+## 项目结构
 
 ```
-app/             routes, layout, chatbot API route, sitemap/robots, dynamic OG image
-components/      layout (nav/footer/theme/cursor/background), hero, work, projects, stack, contact, chat, ui
-content/         profile.json — single source of truth
-lib/             typed profile loader, types, system prompt, rate limiter, analytics
-public/          résumé PDF, headshot, favicons
+app/            路由、layout、chat/event API、sitemap、robots、动态 OG 图、404/error 页
+components/     layout（导航/页脚/主题/指针/背景）、hero、about、work、projects、stack、contact、chat、ui
+content/        profile.json —— 唯一数据源
+lib/            profile 加载、类型、站点 URL、system prompt、限流、检索、统计
+public/         简历 PDF、头像、favicon
+scripts/        gen-resume.py（从 profile.json 生成简历）、ingest.mjs（RAG 入库）
+docs/           PRD / 设计说明 / 技术规格
 ```
-
-## Deployment
-
-Deployed on Vercel. Push to `main` → production; PRs get preview deploys. Add the env vars in **Vercel → Project → Settings → Environment Variables** (Production + Preview), then enable **Web Analytics** in the dashboard. See [`ROADMAP.md`](./ROADMAP.md) for domain/DNS setup.
-
-## Security
-
-- API key is **server-only**; `.env*` is gitignored (`.env.example` is committed with placeholders).
-- The chatbot is protected by per-IP rate limiting (15 messages/hour), an input-length cap, a capped `max_tokens`, and a strict system prompt grounded only in `profile.json`. Pair this with a spend limit on the OpenRouter key.
-- Security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) are set in `next.config.ts`.
 
 ## License
 
-[MIT](./LICENSE) © Sahil Sapra
+[MIT](./LICENSE)
 
 ---
 
 <div align="center">
-<sub>Built with Next.js. Content in JSON, answers via OpenRouter, hosted on Vercel.</sub>
+<sub>Next.js 构建，内容在 JSON 里，部署在 Cloudflare Workers。</sub>
 </div>

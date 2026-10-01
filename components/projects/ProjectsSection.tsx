@@ -7,6 +7,9 @@ const FEATURED_COUNT = 6;
 
 export function ProjectsSection() {
   const featured = profile.projects.slice(0, FEATURED_COUNT);
+  // With only a couple of projects the landing grid already shows everything —
+  // a "查看全部 2 个" link that lands on the same cards is just noise.
+  const hasMore = profile.projects.length > FEATURED_COUNT;
   return (
     <section id="projects" style={{ padding: "64px 0 24px", scrollMarginTop: 88 }}>
       <div
@@ -32,7 +35,7 @@ export function ProjectsSection() {
           className="section-rule"
           style={{ flex: 1, height: 1, background: "var(--line)" }}
         />
-        <ViewAllProjectsLink count={profile.projects.length} />
+        {hasMore && <ViewAllProjectsLink count={profile.projects.length} />}
       </div>
       <ProjectGrid projects={featured} />
     </section>

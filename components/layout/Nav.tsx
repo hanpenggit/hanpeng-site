@@ -6,6 +6,7 @@ import { NavLinks } from "@/components/layout/NavLinks";
 import { MobileNav } from "@/components/layout/MobileNav";
 
 const NAV_LINKS = [
+  { label: "关于", href: "#about" },
   { label: "工作经历", href: "#work" },
   { label: "项目", href: "#projects" },
   { label: "技术栈", href: "#stack" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { MemojiAvatar } from "./MemojiAvatar";
+import { Avatar } from "./Avatar";
 
 export function ChatLauncher({ onOpen }: { onOpen: () => void }) {
   return (
@@ -24,7 +24,7 @@ export function ChatLauncher({ onOpen }: { onOpen: () => void }) {
         transition: "transform .15s, border-color .15s",
       }}
     >
-      <MemojiAvatar size={38} />
+      <Avatar size={38} />
       <span style={{ textAlign: "left" }}>
         <span
           style={{

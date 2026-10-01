@@ -1,13 +1,43 @@
 import { ImageResponse } from "next/og";
 import { profile } from "@/lib/profile";
+import { getSiteUrl } from "@/lib/site";
 
 export const runtime = "edge";
 export const alt = `${profile.identity.name} — ${profile.identity.title}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpengraphImage() {
+// next/og ships a Latin-only font, so Chinese renders as tofu boxes unless we
+// hand satori a CJK face. Google's css2 API serves .ttf to browsers that don't
+// advertise woff2 — that's the trick used below. Cached per isolate, and the
+// route degrades to the built-in font if either fetch fails.
+let cjkFont: ArrayBuffer | null | undefined;
+
+async function loadCjkFont(): Promise<ArrayBuffer | null> {
+  if (cjkFont !== undefined) return cjkFont;
+  let font: ArrayBuffer | null = null;
+  try {
+    const css = await fetch(
+      "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap",
+      // An old UA makes Google serve truetype instead of woff2 (satori can't
+      // decode woff2).
+      { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64)" } },
+    ).then((r) => r.text());
+    const url = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.ttf)\)/)?.[1];
+    font = url ? await fetch(url).then((r) => r.arrayBuffer()) : null;
+  } catch {
+    font = null;
+  }
+  cjkFont = font;
+  return font;
+}
+
+export default async function OpengraphImage() {
   const { identity } = profile;
+  const host = new URL(getSiteUrl()).host;
+  const font = await loadCjkFont();
+  const firstProject = profile.projects[0];
+
   return new ImageResponse(
     (
       <div
@@ -36,13 +66,13 @@ export default function OpengraphImage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 26,
+              fontSize: 30,
               fontWeight: 700,
             }}
           >
-            SS
+            {identity.name.slice(0, 1)}
           </div>
-          <div style={{ fontSize: 26, color: "#9AA7BD" }}>hanpeng.xyz</div>
+          <div style={{ fontSize: 26, color: "#9AA7BD" }}>{host}</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -50,7 +80,8 @@ export default function OpengraphImage() {
             {identity.name}
           </div>
           <div style={{ fontSize: 36, color: "#9AA7BD", maxWidth: 900 }}>
-            {`${identity.title} · QA automation, release quality & AI workflows`}
+            {identity.taglineLead}
+            {identity.taglineAccent}
           </div>
         </div>
 
@@ -76,14 +107,22 @@ export default function OpengraphImage() {
                 background: "#2FA75A",
               }}
             />
-            build: passing
+            {identity.availability}
           </div>
           <div style={{ fontSize: 26, color: "#9AA7BD" }}>
-            {identity.availability.toLowerCase()}
+            {firstProject ? `${firstProject.name} · ${firstProject.metric}` : identity.title}
           </div>
         </div>
       </div>
     ),
-    { ...size },
+    {
+      ...size,
+      fonts: font
+        ? [
+            { name: "sans-serif", data: font, weight: 400 as const, style: "normal" as const },
+            { name: "sans-serif", data: font, weight: 700 as const, style: "normal" as const },
+          ]
+        : undefined,
+    },
   );
 }

@@ -20,9 +20,9 @@ This document is the proof-of-concept and engineering plan. It defines the stack
 | Chatbot transport | **Vercel AI SDK** (`ai`) + **`@openrouter/ai-sdk-provider`** | Streaming out of the box, `useChat` on the client, route handler on the server |
 | LLM | **OpenRouter** — any model via one key. Model chosen by `OPENROUTER_MODEL` env var (default a cheap fast model like `anthropic/claude-3.5-haiku` or `google/gemini-2.0-flash-001`) | One API key, hundreds of models, swap by changing an env var with no code change; small context so no RAG needed |
 | Rate limiting | **@upstash/ratelimit** + **Upstash Redis** (free tier) | Serverless-native; protects the public live key from abuse |
-| Analytics | **Vercel Web Analytics** (`@vercel/analytics`) + custom `track()` events | Page views/visitors/referrers/devices automatically; button clicks via a small fixed event set. No new account, privacy-friendly, free tier |
-| Hosting | **Vercel** | Sahil's stated target; hobby tier is sufficient |
-| Package manager | **pnpm** | Fast, deterministic |
+| Analytics | **Cloudflare Web Analytics** beacon + 自建 `/api/event` | 页面浏览 / Core Web Vitals 由官方 beacon 采集（无 cookie、免同意弹窗）；按钮点击走自己的 Edge route，落在 Worker 日志里。无第三方追踪 |
+| Hosting | **Cloudflare Workers** via `@opennextjs/cloudflare` + wrangler | 站点实际部署目标；密钥用 `wrangler secret put` |
+| Package manager | **npm**（仓库提交 `package-lock.json`） | CI 用 `npm ci` |
 
 > **Why no vector DB / RAG:** Sahil's entire profile fits comfortably in a system prompt (a few KB). Context-stuffing `profile.json` is simpler, cheaper, and more accurate than embeddings for this scale. Revisit RAG only if a blog or long-form corpus is added later.
 
@@ -244,13 +244,14 @@ Use the AI SDK `useChat` hook in `ChatPanel.tsx`. Wire `chatbot.suggestedQuestio
 ## 4B. Analytics, resume, and scheduling
 
 ### Analytics (small + privacy-friendly)
-Use **Vercel Web Analytics** — drop `<Analytics />` (from `@vercel/analytics/react`) into `app/layout.tsx`. That alone gives page views, unique visitors, top pages, referrers, devices, and countries with no extra account.
+Use **Cloudflare Web Analytics** — `components/layout/CloudflareAnalytics.tsx` 在 `NEXT_PUBLIC_CF_BEACON_TOKEN` 存在时注入官方 beacon（`static.cloudflareinsights.com`）。它只负责页面浏览、访客、来源、设备和 Core Web Vitals。
 
-For "what buttons they clicked," fire **custom events** with `track()` on the exact interactions listed in `profile.json → analytics.events`. Wrap it so event names stay consistent and typo-proof:
+> 注意：Cloudflare Web Analytics **不支持自定义事件**，所以按钮点击不能走 beacon。`lib/analytics.ts` 的处理顺序是：先试 Zaraz（`zaraz.track`，在 Cloudflare 面板启用后生效），否则用 `navigator.sendBeacon` 打到本站的 `/api/event`（Edge route，只写 Worker 日志，可用 `wrangler tail` 或面板 Workers → Logs 查看）。两者都没配时静默空转，不影响交互。
+
+事件名集中在 `lib/analytics.ts`，与 `profile.json → analytics.events` 保持一致：
 
 ```ts
 // lib/analytics.ts
-import { track } from "@vercel/analytics";
 
 export type AnalyticsEvent =
   | "resume_viewed" | "schedule_call_clicked" | "chat_opened"
@@ -258,7 +259,10 @@ export type AnalyticsEvent =
   | "email_clicked" | "project_expanded" | "theme_toggled";
 
 export function logEvent(event: AnalyticsEvent, props?: Record<string, string>) {
-  track(event, props);   // no-ops automatically in dev / when analytics is off
+  if (typeof window === "undefined") return;
+  const w = window as unknown as { zaraz?: { track: (n: string, p?: unknown) => void } };
+  if (typeof w.zaraz?.track === "function") return w.zaraz.track(event, props);
+  navigator.sendBeacon?.("/api/event", JSON.stringify({ event, props, path: location.pathname }));
 }
 ```
 Usage: `onClick={() => logEvent("resume_viewed")}`, `logEvent("project_expanded", { project: p.name })`, etc. Keep the set small — this list is the whole telemetry surface. No cookies, no PII, no third-party script.

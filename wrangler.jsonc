@@ -3,9 +3,16 @@
   "name": "hanpeng-site",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-09-01",
+  // OpenNext runs Next.js on the Workers Node.js compatibility layer.
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
+  },
+  // Makes console.log (incl. the /api/event analytics beacon) show up under
+  // Workers → Logs and in `wrangler tail`.
+  "observability": {
+    "enabled": true
   },
   "vars": {
     "OPENROUTER_MODEL": "anthropic/claude-3.5-haiku"

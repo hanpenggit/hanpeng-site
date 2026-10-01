@@ -1,11 +1,11 @@
 {
-  "name": "sahilsapra-website",
-  "version": "1.0.0",
+  "name": "hanpeng-site",
+  "version": "1.2.0",
   "private": true,
-  "description": "Personal portfolio site of Sahil Sapra — Technical Product Manager. Next.js + an AI 'Ask Sahil' chatbot grounded in profile.json.",
+  "description": "韩鹏 的个人网站 — 全栈开发工程师 & AI 工程师。Next.js + 由 profile.json 驱动的“问问 韩鹏”AI 助手，部署在 Cloudflare Workers。",
   "license": "MIT",
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=20.9.0"
   },
   "scripts": {
     "dev": "next dev",
@@ -15,7 +15,8 @@
     "preview:cf": "opennextjs-cloudflare preview",
     "deploy:cf": "opennextjs-cloudflare deploy",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "resume": "python scripts/gen-resume.py"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.5",

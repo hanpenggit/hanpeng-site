@@ -12,41 +12,36 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 9
-
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-          cache: pnpm
+          cache: npm
 
+      # The repo ships package-lock.json — npm ci, not pnpm (pnpm-lock.yaml was
+      # removed, so `pnpm install --frozen-lockfile` fails outright).
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: npm run typecheck
 
       - name: Lint
-        run: pnpm lint
+        run: npm run lint
 
       - name: Build
-        run: pnpm build
+        run: npm run build
         env:
           # Build must succeed without secrets — the chatbot degrades gracefully.
-          NEXT_PUBLIC_SITE_URL: https://sahilsapra.com
+          NEXT_PUBLIC_SITE_URL: https://me.hanpeng.xyz
 
   audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 9
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache: npm
+      - run: npm ci
       - name: Audit (production deps)
-        run: pnpm audit --prod || true
+        run: npm audit --omit=dev || true

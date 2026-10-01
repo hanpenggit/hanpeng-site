@@ -13,10 +13,18 @@
 :root,
 [data-theme="dark"] {
   /* fonts (self-hosted via next/font, injected as variables in layout.tsx) */
-  --font-display: var(--font-instrument-serif), Georgia, serif;
-  --font-grotesk: var(--font-space-grotesk), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", monospace;
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  /* CJK fallback: none of the next/font faces (Instrument Serif, Space Grotesk,
+     Inter, JetBrains Mono) ship Chinese glyphs, so every 汉字 used to fall
+     through to whatever the OS picked. Naming the stack keeps mixed
+     Latin/Chinese text visually consistent. */
+  --cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    "Source Han Sans SC", sans-serif;
+  --font-display: var(--font-instrument-serif), Georgia, var(--cjk), serif;
+  --font-grotesk: var(--font-space-grotesk), system-ui, var(--cjk), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", var(--cjk),
+    monospace;
+  --font-sans: var(--font-inter), system-ui, -apple-system, var(--cjk),
+    sans-serif;
 
   /* Display = Space Grotesk (technical mode), accent upright.
      Swap --display to var(--font-display) + --accent-style: italic for the

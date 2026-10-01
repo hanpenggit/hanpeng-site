@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { Chatbot } from "@/lib/types";
 import { logEvent } from "@/lib/analytics";
-import { MemojiAvatar } from "./MemojiAvatar";
+import { Avatar } from "./Avatar";
 
 type Msg = { role: "user" | "assistant"; text: string; done: boolean };
 
@@ -181,7 +181,7 @@ export function ChatPanel({
           background: "var(--surface)",
         }}
       >
-        <MemojiAvatar size={36} />
+        <Avatar size={36} />
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 13.5, fontWeight: 600, color: "var(--text-hi)" }}>
             {chatbot.displayName}
@@ -242,7 +242,7 @@ export function ChatPanel({
         {messages.map((m, i) =>
           m.role === "assistant" ? (
             <div key={i} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
-              <MemojiAvatar size={28} done={m.done} />
+              <Avatar size={28} done={m.done} />
               <div
                 style={{
                   maxWidth: "80%",

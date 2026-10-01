@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { profile } from "@/lib/profile";
+import { getSiteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? profile.identity.links.website;
+  const base = getSiteUrl();
   const lastModified = new Date(profile.meta.lastUpdated);
   return [
     {

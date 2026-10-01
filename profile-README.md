@@ -1,18 +1,22 @@
-# heyo its sahil 👋
+# 韩鹏 / Han Peng 👋
 
-*this looks cool ngl...*
+全栈开发工程师 & AI 工程师，10 年开发经验。2014–2022 在北京做 Java 后端与大数据，2022 年起在郑州独立开发。
 
-<img src="https://media.giphy.com/media/3oEduWjWxhdKpOUg6c/giphy.gif" alt="Wingsuit flight" width="280">
+**正在做：[族记](https://hanpeng.xyz)** —— 族谱 / 家族树应用，帮家族共同记录成员、辈分关系与家族故事。产品设计、数据建模、前后端开发到部署运维，全部独立完成。
 
-I'm building **[SpecHawk](https://spechawk.ai)** — an agentic QA engineer that lives in your stack 24/7/365, catching bugs before your users ever do.
+## 技术
 
-## reach me
+- **语言**：Java、TypeScript / JavaScript、Python
+- **前端**：React、Next.js
+- **后端与数据**：Spring Boot、Node.js、PostgreSQL / MySQL、REST API、微服务
+- **大数据**：Hadoop、Hive、Spark、Flink、Kafka、数据仓库建模
+- **AI**：LLM 应用开发、RAG、LangChain、OpenAI API、智能体工作流
+- **工程**：Docker、Cloudflare、GitHub Actions、Linux
 
-**Personal** — sahilsapra391@gmail.com<br>
-**Work** — admin@spechawk.ai
+## 找我
 
-<a href="https://spechawk.ai" title="spechawk.ai"><img src="https://raw.githubusercontent.com/sahilsapra391/sahilsapra391/main/assets/spechawk-mark.png" width="46" height="46" alt="SpecHawk"></a>
-&nbsp;&nbsp;&nbsp;
-<a href="https://sahilsapra.com" title="sahilsapra.com"><img src="https://sahilsapra.com/apple-touch-icon.png" width="46" height="46" alt="sahilsapra.com"></a>
-&nbsp;&nbsp;&nbsp;
-<a href="https://www.linkedin.com/in/sahil-sapra" title="LinkedIn"><img src="https://raw.githubusercontent.com/sahilsapra391/sahilsapra391/main/assets/linkedin.png" width="46" height="46" alt="LinkedIn"></a>
+- 邮箱：hanpeng.jack@qq.com
+- 个人站：<https://me.hanpeng.xyz>
+- 在做产品：[族记](https://hanpeng.xyz)
+
+开放：全栈开发工程师 / AI 工程师岗位、独立产品开发合作、外包与技术顾问。

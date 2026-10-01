@@ -8,7 +8,9 @@ import {
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { Background } from "@/components/layout/Background";
 import { CursorGlow } from "@/components/layout/CursorGlow";
+import { CloudflareAnalytics } from "@/components/layout/CloudflareAnalytics";
 import { profile } from "@/lib/profile";
+import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -38,7 +40,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const { identity } = profile;
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? identity.links.website;
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -140,6 +142,7 @@ export default function RootLayout({
           {children}
           <CursorGlow />
         </ThemeProvider>
+        <CloudflareAnalytics />
       </body>
     </html>
   );

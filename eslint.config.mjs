@@ -10,10 +10,20 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: [".next/**", "node_modules/**", "next-env.d.ts", "scripts/**"],
+    // Global ignores — must be its own object, otherwise ESLint walks the
+    // generated .open-next bundle and reports thousands of false positives.
+    ignores: [
+      ".next/**",
+      ".open-next/**",
+      ".wrangler/**",
+      "node_modules/**",
+      "next-env.d.ts",
+      "scripts/**",
+      "public/**",
+    ],
   },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
 export default eslintConfig;

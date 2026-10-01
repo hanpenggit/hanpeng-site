@@ -7,6 +7,9 @@ export interface ProfileMeta {
   version: string;
   lastUpdated: string;
   note: string;
+  /** Canonical URL of THIS site (not the product link in identity.links). */
+  siteUrl?: string;
+  siteUrlNote?: string;
 }
 
 export interface Links {

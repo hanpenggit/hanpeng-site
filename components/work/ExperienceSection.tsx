@@ -337,26 +337,32 @@ export function ExperienceSection({
   const eduRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | undefined>(undefined);
 
+  // profile.json has no education entries yet — showing the toggle would offer
+  // a tab that renders a blank panel, so the whole switcher disappears and the
+  // section stays a plain work timeline. Fill in education and it comes back.
+  const hasEducation = education.length > 0;
+  const active = hasEducation ? tab : "work";
+
   // Keep the sliding viewport's height matched to the active panel so the
   // two differently-sized panels transition smoothly.
   useEffect(() => {
     const measure = () => {
-      const el = tab === "work" ? workRef.current : eduRef.current;
+      const el = active === "work" ? workRef.current : eduRef.current;
       if (el) setHeight(el.offsetHeight);
     };
     measure();
     const ro = new ResizeObserver(measure);
     if (workRef.current) ro.observe(workRef.current);
     if (eduRef.current) ro.observe(eduRef.current);
-    window.addEventListener("resize", measure);
+      window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [tab]);
+  }, [active]);
 
   function switchTo(next: "work" | "education") {
-    if (next === tab) return;
+    if (next === active) return;
     // Set the target height synchronously so height + slide start together.
     const target = next === "work" ? workRef.current : eduRef.current;
     if (target) setHeight(target.offsetHeight);
@@ -387,34 +393,36 @@ export function ExperienceSection({
         <span
           style={{ flex: 1, height: 1, background: "var(--line)", minWidth: 40 }}
         />
-        <div
-          role="tablist"
-          aria-label="工作经历或教育背景"
-          style={{
-            display: "inline-flex",
-            padding: 4,
-            border: "1px solid var(--line)",
-            borderRadius: 999,
-            background: "var(--surface)",
-          }}
-        >
-          <button
-            role="tab"
-            aria-selected={tab === "work"}
-            onClick={() => switchTo("work")}
-            style={toggleBtn(tab === "work")}
+        {hasEducation && (
+          <div
+            role="tablist"
+            aria-label="工作经历或教育背景"
+            style={{
+              display: "inline-flex",
+              padding: 4,
+              border: "1px solid var(--line)",
+              borderRadius: 999,
+              background: "var(--surface)",
+            }}
           >
-            工作
-          </button>
-          <button
-            role="tab"
-            aria-selected={tab === "education"}
-            onClick={() => switchTo("education")}
-            style={toggleBtn(tab === "education")}
-          >
-            教育背景
-          </button>
-        </div>
+            <button
+              role="tab"
+              aria-selected={active === "work"}
+              onClick={() => switchTo("work")}
+              style={toggleBtn(active === "work")}
+            >
+              工作
+            </button>
+            <button
+              role="tab"
+              aria-selected={active === "education"}
+              onClick={() => switchTo("education")}
+              style={toggleBtn(active === "education")}
+            >
+              教育背景
+            </button>
+          </div>
+        )}
       </div>
 
       <div
@@ -430,24 +438,23 @@ export function ExperienceSection({
             display: "flex",
             width: "200%",
             alignItems: "flex-start",
-            transform:
-              tab === "work" ? "translateX(0)" : "translateX(-50%)",
+            transform: active === "work" ? "translateX(0)" : "translateX(-50%)",
             transition: "transform .45s cubic-bezier(.4, 0, .2, 1)",
             willChange: "transform",
           }}
         >
           <div
             ref={workRef}
-            inert={tab !== "work" || undefined}
-            aria-hidden={tab !== "work"}
+            inert={active !== "work" || undefined}
+            aria-hidden={active !== "work"}
             style={{ flex: "0 0 50%", width: "50%", minWidth: 0 }}
           >
             <CompanyList companies={companies} />
           </div>
           <div
             ref={eduRef}
-            inert={tab !== "education" || undefined}
-            aria-hidden={tab !== "education"}
+            inert={active !== "education" || undefined}
+            aria-hidden={active !== "education"}
             style={{ flex: "0 0 50%", width: "50%", minWidth: 0 }}
           >
             <EducationList education={education} />

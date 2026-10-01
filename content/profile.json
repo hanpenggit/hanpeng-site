@@ -1,8 +1,10 @@
 {
   "meta": {
-    "version": "1.1.0",
-    "lastUpdated": "2026-09-26",
-    "note": "整站唯一数据源。网站界面与“问问 韩鹏”聊天机器人都读取此文件。只在这里改，不要在组件代码里改。"
+    "version": "1.2.0",
+    "lastUpdated": "2026-10-01",
+    "note": "整站唯一数据源。网站界面与“问问 韩鹏”聊天机器人都读取此文件。只在这里改，不要在组件代码里改。",
+    "siteUrl": "https://me.hanpeng.xyz",
+    "siteUrlNote": "本站在 Cloudflare 上的正式访问地址（canonical / sitemap / OG / JSON-LD 都用它）。部署到真实域名后改成那个域名，例如 https://hanpeng.xyz 或 https://hanpeng-site.xxx.workers.dev。注意：它和 identity.links.website（族记产品站）是两回事，不要混用。"
   },
   "identity": {
     "name": "韩鹏",

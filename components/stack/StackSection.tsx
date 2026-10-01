@@ -124,6 +124,9 @@ export function StackSection() {
         <div>
           <div style={sectionLabel}>证书资质</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
+            {profile.certifications.length === 0 && (
+              <div style={{ fontSize: 13, color: "var(--text-lo)" }}>暂无</div>
+            )}
             {profile.certifications.map((c) => (
               <div
                 key={c}
