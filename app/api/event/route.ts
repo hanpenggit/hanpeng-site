@@ -25,7 +25,6 @@ const ALLOWED = new Set([
   "project_link_clicked",
   "all_projects_clicked",
   "theme_toggled",
-  "about_opened",
 ]);
 
 export async function POST(req: Request) {

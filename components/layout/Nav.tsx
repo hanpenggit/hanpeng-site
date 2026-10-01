@@ -1,12 +1,10 @@
 import { profile } from "@/lib/profile";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Wordmark } from "@/components/layout/Wordmark";
-import { ResumeButton } from "@/components/layout/ResumeButton";
 import { NavLinks } from "@/components/layout/NavLinks";
 import { MobileNav } from "@/components/layout/MobileNav";
 
 const NAV_LINKS = [
-  { label: "关于", href: "#about" },
   { label: "工作经历", href: "#work" },
   { label: "项目", href: "#projects" },
   { label: "技术栈", href: "#stack" },
@@ -44,7 +42,6 @@ export function Nav() {
         {/* desktop: inline links + actions */}
         <div className="nav-desktop">
           <NavLinks links={NAV_LINKS} />
-          <ResumeButton href={links.resume} />
           <ThemeToggle />
         </div>
 

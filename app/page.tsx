@@ -3,7 +3,6 @@ import { ChatProvider } from "@/components/chat/ChatProvider";
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/hero/Hero";
-import { AboutSection } from "@/components/about/AboutSection";
 import { ExperienceSection } from "@/components/work/ExperienceSection";
 import { ProjectsSection } from "@/components/projects/ProjectsSection";
 import { StackSection } from "@/components/stack/StackSection";
@@ -19,7 +18,6 @@ export default function Home() {
         style={{ maxWidth: 1120, margin: "0 auto", padding: "0 32px" }}
       >
         <Hero />
-        <AboutSection />
         <ExperienceSection
           companies={profile.experience}
           education={profile.education}

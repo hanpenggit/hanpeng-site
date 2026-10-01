@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import type { Links } from "@/lib/types";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { ResumeButton } from "@/components/layout/ResumeButton";
 import { TrackedLink } from "@/components/ui/TrackedLink";
 import { EmailButton } from "@/components/ui/EmailButton";
 import { LinkedInIcon, GitHubIcon, YouTubeIcon } from "@/components/ui/icons";
@@ -151,7 +150,6 @@ export function MobileNav({
             </a>
           )}
           <div className="mobile-menu-row">
-            <ResumeButton href={links.resume} />
             <ThemeToggle />
           </div>
           <div className="mobile-menu-socials">

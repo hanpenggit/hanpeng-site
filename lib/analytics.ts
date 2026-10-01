@@ -21,8 +21,7 @@ export type AnalyticsEvent =
   | "project_expanded"
   | "project_link_clicked"
   | "all_projects_clicked"
-  | "theme_toggled"
-  | "about_opened";
+  | "theme_toggled";
 
 type Zaraz = { track: (name: string, props?: Record<string, unknown>) => void };
 
