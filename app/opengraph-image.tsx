@@ -79,9 +79,10 @@ export default async function OpengraphImage() {
           <div style={{ fontSize: 96, fontWeight: 700, letterSpacing: "-3px" }}>
             {identity.name}
           </div>
+          {/* One text node only — satori rejects a div with multiple children
+              unless it declares display:flex. */}
           <div style={{ fontSize: 36, color: "#9AA7BD", maxWidth: 900 }}>
-            {identity.taglineLead}
-            {identity.taglineAccent}
+            {`${identity.taglineLead}${identity.taglineAccent}`}
           </div>
         </div>
 

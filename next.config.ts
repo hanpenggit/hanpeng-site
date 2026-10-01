@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  images: {
+    // Next 16 only allows quality 75 by default; the hero headshot asks for 92
+    // so it stays sharp on retina screens.
+    qualities: [75, 92],
+  },
   async headers() {
     return [
       {
