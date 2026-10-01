@@ -26,37 +26,18 @@ export function ContactSection() {
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
 
-      <div
-        style={{
-          border: "1px solid var(--line)",
-          borderRadius: 10,
-          background: "var(--surface)",
-          padding: "44px 40px",
-          display: "flex",
-          gap: 40,
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ flex: "1 1 360px" }}>
-          <p
-            style={{
-              fontFamily: "var(--display)",
-              fontWeight: 400,
-              fontSize: "clamp(26px, 3.4vw, 36px)",
-              lineHeight: 1.16,
-              letterSpacing: "-.01em",
-              maxWidth: "20ch",
-            }}
-          >
+      <div className="contact-card">
+        {/* flex basis lives in CSS: inline `flex: 1 1 360px` would become a
+            360px HEIGHT once .contact-card turns into a column on mobile */}
+        <div className="contact-pitch-wrap">
+          <p className="contact-pitch">
             想快速了解？{" "}
-            <span style={{ color: "var(--pass)", fontStyle: "var(--accent-style)" }}>
+            <span style={{ color: "var(--pass)", fontStyle: "var(--accent-style)", whiteSpace: "nowrap" }}>
               问问 AI 分身。
             </span>
             <br />
             想直接聊？{" "}
-            <span style={{ color: "var(--brand-soft)", fontStyle: "var(--accent-style)" }}>
+            <span style={{ color: "var(--brand-soft)", fontStyle: "var(--accent-style)", whiteSpace: "nowrap" }}>
               发邮件。
             </span>
           </p>

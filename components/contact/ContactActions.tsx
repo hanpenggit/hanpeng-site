@@ -24,40 +24,17 @@ const square: React.CSSProperties = {
 
 export function ContactActions({ links }: { links: Links }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        flex: "0 0 auto",
-        minWidth: 220,
-      }}
-    >
+    <div className="contact-actions">
       <TrackedLink
         href={links.website}
         event="project_link_clicked"
         newTab
-        className="h-primaryflat"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-          height: 46,
-          padding: "0 20px",
-          borderRadius: 8,
-          background: "var(--brand)",
-          color: "#fff",
-          fontSize: 14,
-          fontWeight: 500,
-          textDecoration: "none",
-          transition: "background .15s",
-        }}
+        className="h-primaryflat contact-primary"
       >
         访问族记 <span aria-hidden="true">↗</span>
       </TrackedLink>
 
-      <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+      <div className="contact-socials">
         {links.linkedin && (
           <TrackedLink
             href={links.linkedin}

@@ -56,3 +56,9 @@ next-env.d.ts
 public/sahil.png
 public/sahil-memoji*.png
 public/Sahil_Sapra_Resume*.pdf
+
+# playwright-cli session artifacts
+.playwright-cli/
+
+# playwright-cli session artifacts
+.playwright-cli/
