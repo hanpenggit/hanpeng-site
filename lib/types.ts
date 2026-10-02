@@ -84,6 +84,18 @@ export interface ProjectLink {
   href: string;
 }
 
+/** One "how I solved it" bullet inside a project's expanded panel. */
+export interface Highlight {
+  title: string;
+  detail: string;
+}
+
+/** One card of the 核心能力 section. */
+export interface Capability {
+  title: string;
+  detail: string;
+}
+
 export interface Project {
   name: string;
   year: string;
@@ -92,6 +104,8 @@ export interface Project {
   tags: string[];
   blurb: string;
   detail: string;
+  /** Optional "架构亮点" bullets shown in the expanded panel. */
+  highlights?: Highlight[];
   // Live site / repo, shown inside the expanded detail panel.
   links?: ProjectLink[];
 }
@@ -114,9 +128,12 @@ export interface Profile {
   meta: ProfileMeta;
   identity: Identity;
   headlineMetrics: HeadlineMetric[];
+  capabilities?: Capability[];
   experience: Company[];
   education: Education[];
   skills: Record<string, string[]>;
+  /** Optional 实战注脚 rendered under each skill group (key = group name). */
+  skillNotes?: Record<string, string>;
   areasOfExpertise: string[];
   projects: Project[];
   certifications: string[];

@@ -57,24 +57,43 @@ export function StackSection() {
             >
               {g.name}
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {g.items.map((s) => (
-                <span
-                  key={s}
-                  className="h-chip"
+            {/* chips + 注脚 share one grid cell, so the note sits under the
+                tags instead of leaking into the label column */}
+            <div style={{ minWidth: 0 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {g.items.map((s) => (
+                  <span
+                    key={s}
+                    className="h-chip"
+                    style={{
+                      fontSize: 13,
+                      color: "var(--text-hi)",
+                      padding: "5px 12px",
+                      border: "1px solid var(--line)",
+                      borderRadius: 6,
+                      background: "var(--surface)",
+                      transition: "border-color .15s",
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+              {/* 实战注脚 — turns the tag row into "what I solved with these". */}
+              {profile.skillNotes?.[g.name] && (
+                <p
+                  className="skill-note"
                   style={{
-                    fontSize: 13,
-                    color: "var(--text-hi)",
-                    padding: "5px 12px",
-                    border: "1px solid var(--line)",
-                    borderRadius: 6,
-                    background: "var(--surface)",
-                    transition: "border-color .15s",
+                    fontSize: 12.5,
+                    lineHeight: 1.6,
+                    color: "var(--text-lo)",
+                    margin: "10px 0 0",
+                    maxWidth: "70ch",
                   }}
                 >
-                  {s}
-                </span>
-              ))}
+                  {profile.skillNotes[g.name]}
+                </p>
+              )}
             </div>
           </div>
         ))}

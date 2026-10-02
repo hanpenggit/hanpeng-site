@@ -217,6 +217,54 @@ export function ProjectCard({ project }: { project: Project }) {
             >
               {project.detail}
             </p>
+            {/* 架构亮点 — the "challenge → how I solved it" bullets. */}
+            {project.highlights && project.highlights.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 9,
+                  marginTop: 12,
+                }}
+              >
+                {project.highlights.map((h) => (
+                  <div key={h.title}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        gap: 8,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "var(--text-hi)",
+                      }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          color: "var(--pass)",
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 11,
+                        }}
+                      >
+                        ▸
+                      </span>
+                      {h.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12.5,
+                        lineHeight: 1.6,
+                        color: "var(--text-lo)",
+                        marginTop: 3,
+                      }}
+                    >
+                      {h.detail}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             {project.links && project.links.length > 0 && (
               <div
                 style={{

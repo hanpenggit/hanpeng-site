@@ -1,7 +1,7 @@
 {
   "meta": {
-    "version": "1.2.0",
-    "lastUpdated": "2026-10-01",
+    "version": "1.3.0",
+    "lastUpdated": "2026-10-02",
     "note": "整站唯一数据源。网站界面与“问问 韩鹏”聊天机器人都读取此文件。只在这里改，不要在组件代码里改。",
     "siteUrl": "https://me.hanpeng.xyz",
     "siteUrlNote": "本站在 Cloudflare 上的正式访问地址（canonical / sitemap / OG / JSON-LD 都用它）。部署到真实域名后改成那个域名，例如 https://hanpeng.xyz 或 https://hanpeng-site.xxx.workers.dev。注意：它和 identity.links.website（族记产品站）是两回事，不要混用。"
@@ -38,6 +38,20 @@
     { "lead": "", "value": 10, "suffix": "+", "label": "年开发经验", "detail": "Java · 大数据 · 全栈 · AI", "tone": "brand" },
     { "lead": "", "value": 1, "suffix": "", "label": "个正在打磨的产品", "detail": "族记 · 家族树应用", "tone": "pass" },
     { "lead": "", "value": 100, "suffix": "%", "label": "独立端到端交付", "detail": "设计 · 开发 · 上线", "tone": "brand" }
+  ],
+  "capabilities": [
+    {
+      "title": "高可用架构与底层基础设施",
+      "detail": "无论是基于 Proxmox VE + ZFS 的私有化环境，还是阿里云 Kubernetes（ACK）生产集群，都能从硬件底层到云端编排提供全栈保障。"
+    },
+    {
+      "title": "复杂业务建模与全链路优化",
+      "detail": "从千万级数据的离线 / 实时管道处理，到大规模关系图谱的 Web 渲染，擅长在复杂业务逻辑中找到性能与架构的最优解。"
+    },
+    {
+      "title": "AI 算力部署与业务深度融合",
+      "detail": "不止于调用 API：多模态大模型的私有化部署与推理调优，打通从非结构化数据提取到 RAG 知识库构建的完整 AI 应用管线。"
+    }
   ],
   "experience": [
     {
@@ -83,10 +97,19 @@
   "education": [],
   "skills": {
     "语言与框架": ["Java", "TypeScript", "JavaScript", "React", "Next.js", "Node.js", "Python"],
-    "后端与数据": ["Spring Boot", "PostgreSQL", "MySQL", "REST API", "微服务", "缓存", "SQL 建模"],
+    "后端与数据": ["Spring Boot", "PostgreSQL", "MySQL", "Redis", "PostGIS", "ClickHouse", "REST API", "微服务", "SQL 建模"],
     "大数据": ["Hadoop", "Hive", "Spark", "Flink", "Kafka", "数据仓库建模"],
-    "云与 DevOps": ["Docker", "Vercel", "Cloudflare", "GitHub Actions", "Linux", "Git"],
-    "AI 与工具": ["LLM 应用开发", "RAG", "LangChain", "OpenAI API", "智能体工作流", "Claude Code"]
+    "运维与可观测性": ["OpenTelemetry", "HertzBeat", "Prometheus", "Nginx / OpenResty", "全链路追踪", "告警体系"],
+    "云与 DevOps": ["Docker", "Kubernetes (ACK)", "Proxmox VE", "ZFS", "GitLab CI/CD", "Cloudflare", "GitHub Actions", "Linux", "Git"],
+    "AI 与工具": ["LLM 应用开发", "RAG", "LangChain", "OpenAI API", "智能体工作流", "vLLM", "Ollama", "LiteLLM", "Claude Code"]
+  },
+  "skillNotes": {
+    "语言与框架": "专注高并发后端与 Web 性能优化，兼具 Python 自动化与中间件开发能力。",
+    "后端与数据": "主导微服务可观测性重构，基于 OpenTelemetry + HertzBeat 构建轻量全链路追踪与告警；用 PostGIS、ClickHouse、Redis 解决时空与分析型场景。",
+    "大数据": "Hadoop/Hive 离线数仓 + Spark 计算 + Kafka 实时管道，支撑千万级数据量的稳定产出。",
+    "运维与可观测性": "从硬件、数据库到应用层的监控告警闭环：OpenTelemetry 无侵入采集调用链，Prometheus 指标，HertzBeat 告警，Nginx/OpenResty 日志分析。",
+    "云与 DevOps": "阿里云 ACK 集群管理与多地域 VPC 组网；自建 Proxmox VE + ZFS 私有化底座；GitLab CI/CD 自动化流水线。",
+    "AI 与工具": "多模态大模型（Qwen / GLM）私有化部署与 vLLM 推理加速，LiteLLM 统一多模型接口，AutoDL 与本地算力实践。"
   },
   "areasOfExpertise": [
     "全栈产品开发（从零到一）",
@@ -107,6 +130,20 @@
       "tags": ["Next.js", "TypeScript", "PostgreSQL", "AI / LLM"],
       "blurb": "族谱 / 家族树应用：帮助家族共同记录成员、辈分关系与家族故事，把散落的家族记忆沉淀下来。",
       "detail": "族谱关系以树状结构建模并可视化，按辈分层级展示，支持聚焦某一支系；家族成员可协同补充信息、上传老照片与口述故事，数据仅对受邀成员可见。从产品设计、数据建模、前后端开发到部署运维全部独立完成，并用 LLM 探索把口述故事自动整理成结构化的家族记忆条目。",
+      "highlights": [
+        {
+          "title": "复杂血缘图谱建模",
+          "detail": "兼容多伴侣、跨代继养等复杂家庭结构的树状数据建模，支持按支系聚焦与大规模成员关系的高性能展示。"
+        },
+        {
+          "title": "AI 视觉与数据结构化",
+          "detail": "多模态大模型视觉能力用于老照片修复与族谱资料的结构化提取，并把口述故事整理成家族记忆条目。"
+        },
+        {
+          "title": "家族协同与隐私",
+          "detail": "多成员协同维护家族记录、上传照片与故事，数据仅对受邀成员可见，隐私优先的权限设计。"
+        }
+      ],
       "links": [
         { "label": "hanpeng.xyz", "href": "https://hanpeng.xyz" }
       ]

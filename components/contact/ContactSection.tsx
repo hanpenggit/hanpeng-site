@@ -3,6 +3,7 @@ import { ContactActions } from "./ContactActions";
 
 export function ContactSection() {
   const { links } = profile.identity;
+  const botEnabled = !!profile.chatbot.enabled;
   return (
     <section id="contact" style={{ padding: "64px 0 80px", scrollMarginTop: 88 }}>
       <div
@@ -41,6 +42,19 @@ export function ContactSection() {
               发邮件。
             </span>
           </p>
+          {botEnabled && (
+            <p
+              className="contact-hint"
+              style={{
+                fontSize: 13,
+                lineHeight: 1.6,
+                color: "var(--text-lo)",
+                margin: "12px 0 0",
+              }}
+            >
+              AI 分身由大模型与我的真实项目资料驱动，欢迎抛硬核技术问题。
+            </p>
+          )}
         </div>
         <ContactActions links={links} />
       </div>
