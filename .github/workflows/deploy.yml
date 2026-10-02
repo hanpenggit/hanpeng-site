@@ -27,7 +27,7 @@ jobs:
       - name: Build for Cloudflare Workers (OpenNext)
         run: npm run build:cf
         env:
-          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://me.hanpeng.xyz' }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://my.hanpeng.xyz' }}
           NEXT_PUBLIC_CF_BEACON_TOKEN: ${{ vars.NEXT_PUBLIC_CF_BEACON_TOKEN }}
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
 

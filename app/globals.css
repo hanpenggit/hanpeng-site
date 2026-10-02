@@ -385,10 +385,18 @@ a {
 /* 核心能力 — three cards; collapse to one column on small screens. */
 .capability-grid { grid-template-columns: repeat(3, 1fr); }
 
+/* AI Lab — 2×2 experiment cards. */
+.ai-grid { grid-template-columns: repeat(2, 1fr); }
+
+/* Engineering Philosophy — two columns of short beliefs. */
+.philosophy-grid { grid-template-columns: repeat(2, 1fr); column-gap: 40px; }
+
 @media (max-width: 860px) {
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
   .stack-bottom { grid-template-columns: 1fr; gap: 36px; }
   .capability-grid { grid-template-columns: 1fr; }
+  .ai-grid { grid-template-columns: 1fr; }
+  .philosophy-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {

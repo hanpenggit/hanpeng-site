@@ -3,7 +3,9 @@ import { ContactActions } from "./ContactActions";
 
 export function ContactSection() {
   const { links } = profile.identity;
-  const botEnabled = !!profile.chatbot.enabled;
+  // Same semantics as ChatProvider (enabled !== false): a missing field means
+  // enabled, so the two can never disagree about whether the bot exists.
+  const botEnabled = profile.chatbot.enabled !== false;
   return (
     <section id="contact" style={{ padding: "64px 0 80px", scrollMarginTop: 88 }}>
       <div

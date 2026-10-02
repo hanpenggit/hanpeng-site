@@ -26,6 +26,8 @@ export interface Links {
 export interface Identity {
   name: string;
   title: string;
+  /** Optional second line under the title, e.g. "Independent Developer · AI Builder". */
+  roleLine?: string;
   taglineLead: string;
   taglineAccent: string;
   heroSummary: string;
@@ -90,10 +92,48 @@ export interface Highlight {
   detail: string;
 }
 
-/** One card of the 核心能力 section. */
-export interface Capability {
+/** "What I Build" card — replaces the old resume-style capability card. */
+export interface BuildGroup {
+  num: string;
+  title: string;
+  headline: string;
+  detail: string;
+}
+
+export interface ProfileBuild {
+  title: string;
+  description: string;
+  groups: BuildGroup[];
+}
+
+/** One experiment card in the AI Lab section. */
+export interface AiExperiment {
+  title: string;
+  description: string;
+  tags: string[];
+}
+
+export interface AiLab {
+  title: string;
+  description: string;
+  experiments: AiExperiment[];
+}
+
+export interface PhilosophyItem {
+  num: string;
   title: string;
   detail: string;
+}
+
+export interface NowItem {
+  status: string;
+  title: string;
+  description: string;
+}
+
+export interface NowData {
+  updated: string;
+  items: NowItem[];
 }
 
 export interface Project {
@@ -128,7 +168,8 @@ export interface Profile {
   meta: ProfileMeta;
   identity: Identity;
   headlineMetrics: HeadlineMetric[];
-  capabilities?: Capability[];
+  /** "What I Build" — replaces resume-style capabilities. */
+  build?: ProfileBuild;
   experience: Company[];
   education: Education[];
   skills: Record<string, string[]>;
@@ -136,6 +177,9 @@ export interface Profile {
   skillNotes?: Record<string, string>;
   areasOfExpertise: string[];
   projects: Project[];
+  aiLab?: AiLab;
+  philosophy?: PhilosophyItem[];
+  now?: NowData;
   certifications: string[];
   chatbot: Chatbot;
   analytics: Analytics;

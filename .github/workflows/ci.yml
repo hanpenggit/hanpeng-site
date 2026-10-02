@@ -32,7 +32,7 @@ jobs:
         run: npm run build
         env:
           # Build must succeed without secrets — the chatbot degrades gracefully.
-          NEXT_PUBLIC_SITE_URL: https://me.hanpeng.xyz
+          NEXT_PUBLIC_SITE_URL: https://my.hanpeng.xyz
 
   audit:
     runs-on: ubuntu-latest

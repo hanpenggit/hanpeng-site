@@ -15,9 +15,9 @@ Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全�
 ## 特性
 
 - **内容单一数据源** —— `content/profile.json`：个人信息、经历、项目、技能、指标、机器人文案全在里面，改完不用碰组件代码。
-- **关于 / 经历 / 项目 / 技术栈 / 联系** 五个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
+- **What I Build / 精选项目 / AI Lab / 工作经历 / Philosophy / Now / 技术栈 / 联系** 八个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
 - **「问问 hanpeng」AI 助手** —— 走 OpenRouter 流式输出，system prompt 只用 `profile.json` 的事实，按 IP 限流 + 长度/token 上限；未配密钥时优雅降级成邮箱引导。
-- **简历按钮** —— `public/resume.pdf`，可由 `npm run resume` 从 `profile.json` 重新生成，永远不会和网页内容脱节。
+- **简历生成脚本** —— `npm run resume` 可从 `profile.json` 生成 `public/resume.pdf`，与网页内容同源；按钮当前隐藏，需要时把 `identity.links.resume` 接回导航即可。
 - **隐私友好统计** —— Cloudflare Web Analytics（无 cookie、无需同意弹窗）看浏览量和 Core Web Vitals；按钮点击走自有的 `/api/event`，落在 Worker 日志里。
 - **深浅色主题**、圆形揭示动画、自定义指针、`prefers-reduced-motion` 全支持、320px 起响应式、中文有专门字体兜底。
 - **SEO** —— canonical / sitemap.xml / robots.txt / OG 图（含中文字体）/ Person JSON-LD，站点地址由 `meta.siteUrl` 一处控制。
@@ -118,11 +118,11 @@ npm run resume      # 从 profile.json 重新生成 public/resume.pdf（需 pyth
 
 ```
 app/            路由、layout、chat/event API、sitemap、robots、动态 OG 图、404/error 页
-components/     layout（导航/页脚/主题/指针/背景）、hero、about、work、projects、stack、contact、chat、ui
+components/     layout（导航/页脚/主题/指针/背景）、hero、build、projects、ai-lab、work、philosophy、now、stack、contact、chat、ui
 content/        profile.json —— 唯一数据源
 lib/            profile 加载、类型、站点 URL、system prompt、限流、检索、统计
-public/         简历 PDF、头像、favicon
-scripts/        gen-resume.py（从 profile.json 生成简历）、ingest.mjs（RAG 入库）
+public/         头像、favicon
+scripts/        gen-resume.py（从 profile.json 生成简历，输出到本地不入库）、ingest.mjs（RAG 入库）
 docs/           PRD / 设计说明 / 技术规格
 ```
 

@@ -47,6 +47,22 @@ export function Hero() {
               {identity.title}
             </span>
           </div>
+          {identity.roleLine && (
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                color: "var(--text-lo)",
+                marginBottom: 18,
+                marginTop: -12,
+                paddingLeft: 40,
+              }}
+            >
+              {identity.roleLine}
+            </div>
+          )}
 
           <h1
             id="hero-name"
