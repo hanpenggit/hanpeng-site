@@ -27,7 +27,7 @@ export default function ProjectsPage() {
       <main
         id="top"
         className="main-pad"
-        style={{ maxWidth: 1120, margin: "0 auto", padding: "0 32px" }}
+        style={{ maxWidth: 1120, margin: "0 auto", padding: "0 clamp(20px, 5vw, 32px)" }}
       >
         <section style={{ padding: "48px 0 24px" }}>
           <Link

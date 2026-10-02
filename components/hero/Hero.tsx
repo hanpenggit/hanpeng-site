@@ -23,7 +23,9 @@ export function Hero() {
           flexWrap: "wrap",
         }}
       >
-        <div style={{ flex: "1 1 480px", minWidth: 300 }}>
+        {/* minWidth: 0 — a 300px floor here overflowed 320px screens (the old
+            `minWidth: 300` + page padding = 332px > 320px viewport). */}
+        <div style={{ flex: "1 1 480px", minWidth: 0 }}>
           <div
             style={{
               display: "flex",
