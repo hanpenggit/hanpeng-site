@@ -8,6 +8,18 @@ const STATUS_COLOR: Record<string, string> = {
   RUNNING: "var(--text-lo)",
 };
 
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+// "2026-10" → "October 2026" — a light timestamp that ages visibly.
+function formatUpdated(updated: string): string {
+  const [y, m] = updated.split("-");
+  const idx = Number(m) - 1;
+  return idx >= 0 && idx < 12 ? `${MONTHS[idx]} ${y}` : updated;
+}
+
 export function NowSection() {
   const now = profile.now;
   if (!now || now.items.length === 0) return null;
@@ -41,7 +53,7 @@ export function NowSection() {
             whiteSpace: "nowrap",
           }}
         >
-          更新于 {now.updated}
+          {formatUpdated(now.updated)}
         </span>
       </div>
 

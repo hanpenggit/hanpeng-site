@@ -1,7 +1,8 @@
 import { profile } from "@/lib/profile";
 
-// AI Lab — shows the AI direction as concrete experiments instead of a pile of
-// tool names. Hidden entirely when profile.json has no aiLab data.
+// AI Lab — a light experiment list, not another wall of cards: one row per
+// direction (name → description → tech), separated by hairlines. Answers
+// "我正在研究什么？" while Selected Work answers "我做了什么？".
 export function AiLabSection() {
   const lab = profile.aiLab;
   if (!lab || lab.experiments.length === 0) return null;
@@ -26,6 +27,19 @@ export function AiLabSection() {
         >
           {lab.title}
         </h2>
+        {lab.tagline && (
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 12,
+              letterSpacing: ".08em",
+              color: "var(--brand-soft)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {lab.tagline}
+          </span>
+        )}
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
       <p
@@ -34,63 +48,60 @@ export function AiLabSection() {
           lineHeight: 1.7,
           color: "var(--text-lo)",
           maxWidth: "56ch",
-          marginBottom: 26,
+          marginBottom: 22,
         }}
       >
         {lab.description}
       </p>
 
-      <div className="ai-grid" style={{ display: "grid", gap: 14 }}>
-        {lab.experiments.map((exp) => (
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {lab.experiments.map((exp, i) => (
           <div
             key={exp.title}
-            className="h-card"
+            className="ai-row"
             style={{
-              border: "1px solid var(--line)",
-              borderRadius: 8,
-              background: "var(--surface)",
-              padding: "18px 20px",
               display: "flex",
-              flexDirection: "column",
-              gap: 8,
+              alignItems: "baseline",
+              gap: 24,
+              padding: "17px 0",
+              borderTop: i === 0 ? "1px solid var(--line)" : "none",
+              borderBottom: "1px solid var(--line)",
+              flexWrap: "wrap",
             }}
           >
-            <h3
+            <div
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: 13.5,
                 fontWeight: 600,
                 letterSpacing: ".05em",
                 color: "var(--text-hi)",
+                minWidth: 150,
               }}
             >
               {exp.title}
-            </h3>
+            </div>
             <p
               style={{
+                flex: "1 1 300px",
+                minWidth: 0,
                 fontSize: 13,
                 lineHeight: 1.65,
                 color: "var(--text-lo)",
+                margin: 0,
               }}
             >
               {exp.description}
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: "auto" }}>
-              {exp.tags.map((t) => (
-                <span
-                  key={t}
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 10.5,
-                    color: "var(--text-lo)",
-                    padding: "3px 8px",
-                    border: "1px solid var(--line)",
-                    borderRadius: 5,
-                  }}
-                >
-                  {t}
-                </span>
-              ))}
+            <div
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                color: "var(--brand-soft)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {exp.tags.join(" · ")}
             </div>
           </div>
         ))}

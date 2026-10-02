@@ -388,7 +388,7 @@ export function ExperienceSection({
             letterSpacing: "-.01em",
           }}
         >
-          工作经历
+          Experience
         </h2>
         <span
           style={{ flex: 1, height: 1, background: "var(--line)", minWidth: 40 }}

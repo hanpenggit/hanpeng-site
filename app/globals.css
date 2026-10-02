@@ -385,8 +385,10 @@ a {
 /* 核心能力 — three cards; collapse to one column on small screens. */
 .capability-grid { grid-template-columns: repeat(3, 1fr); }
 
-/* AI Lab — 2×2 experiment cards. */
-.ai-grid { grid-template-columns: repeat(2, 1fr); }
+/* Featured project hero card (族记) — full-width protagonist. Highlights go
+   3-up and the padding tightens on small screens. */
+.featured-card { padding: 34px 36px 30px; }
+.featured-highlights { grid-template-columns: repeat(3, 1fr); }
 
 /* Engineering Philosophy — two columns of short beliefs. */
 .philosophy-grid { grid-template-columns: repeat(2, 1fr); column-gap: 40px; }
@@ -395,8 +397,9 @@ a {
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
   .stack-bottom { grid-template-columns: 1fr; gap: 36px; }
   .capability-grid { grid-template-columns: 1fr; }
-  .ai-grid { grid-template-columns: 1fr; }
   .philosophy-grid { grid-template-columns: 1fr; }
+  .featured-card { padding: 26px 22px 24px; }
+  .featured-highlights { grid-template-columns: 1fr; gap: 12px; }
 }
 
 @media (max-width: 720px) {

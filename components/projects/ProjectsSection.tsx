@@ -1,4 +1,5 @@
 import { profile } from "@/lib/profile";
+import { FeaturedProjectCard } from "./FeaturedProjectCard";
 import { ProjectGrid } from "./ProjectGrid";
 import { ViewAllProjectsLink } from "./ViewAllProjectsLink";
 
@@ -10,6 +11,10 @@ export function ProjectsSection() {
   // With only a couple of projects the landing grid already shows everything —
   // a "查看全部 2 个" link that lands on the same cards is just noise.
   const hasMore = profile.projects.length > FEATURED_COUNT;
+  // The main product gets a full-width hero card; the rest share the two-column
+  // grid. Falls back to the plain grid when nothing is marked featured.
+  const hero = featured.find((p) => p.featured) ?? null;
+  const rest = hero ? featured.filter((p) => p !== hero) : featured;
   return (
     <section id="projects" style={{ padding: "64px 0 24px", scrollMarginTop: 88 }}>
       <div
@@ -29,7 +34,7 @@ export function ProjectsSection() {
             letterSpacing: "-.01em",
           }}
         >
-          精选项目
+          Selected Work
         </h2>
         <span
           className="section-rule"
@@ -37,7 +42,12 @@ export function ProjectsSection() {
         />
         {hasMore && <ViewAllProjectsLink count={profile.projects.length} />}
       </div>
-      <ProjectGrid projects={featured} />
+      {hero && (
+        <div style={{ marginTop: 16 }}>
+          <FeaturedProjectCard project={hero} />
+        </div>
+      )}
+      {rest.length > 0 && <ProjectGrid projects={rest} />}
     </section>
   );
 }

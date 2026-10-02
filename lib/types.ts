@@ -115,6 +115,8 @@ export interface AiExperiment {
 
 export interface AiLab {
   title: string;
+  /** Short mono accent line above the description, e.g. "Exploring AI beyond chat." */
+  tagline?: string;
   description: string;
   experiments: AiExperiment[];
 }
@@ -138,6 +140,10 @@ export interface NowData {
 
 export interface Project {
   name: string;
+  /** English subtitle, e.g. "Family Knowledge Network" — shown under the name. */
+  subtitle?: string;
+  /** Featured projects render as a full-width hero card instead of a grid cell. */
+  featured?: boolean;
   year: string;
   role: string;
   metric: string;

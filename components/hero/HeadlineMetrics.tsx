@@ -93,7 +93,9 @@ export function HeadlineMetrics({ metrics }: { metrics: HeadlineMetric[] }) {
                 }}
               >
                 {m.lead}
-                {Math.round(counts[i] ?? 0)}
+                {/* value 0 marks a non-numeric metric (e.g. "AI Builder") —
+                    lead/suffix alone carry it, no counter */}
+                {m.value > 0 && Math.round(counts[i] ?? 0)}
                 {m.suffix}
               </div>
               <div

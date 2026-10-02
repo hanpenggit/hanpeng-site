@@ -24,7 +24,7 @@ export function ContactSection() {
             letterSpacing: "-.01em",
           }}
         >
-          联系方式
+          Contact
         </h2>
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
@@ -34,15 +34,12 @@ export function ContactSection() {
             360px HEIGHT once .contact-card turns into a column on mobile */}
         <div className="contact-pitch-wrap">
           <p className="contact-pitch">
-            想快速了解？{" "}
-            <span style={{ color: "var(--pass)", fontStyle: "var(--accent-style)", whiteSpace: "nowrap" }}>
-              问问 AI 分身。
-            </span>
-            <br />
-            想直接聊？{" "}
+            想合作或聊聊项目？{" "}
             <span style={{ color: "var(--brand-soft)", fontStyle: "var(--accent-style)", whiteSpace: "nowrap" }}>
               发邮件。
             </span>
+            <br />
+            一般会在一天内回复。
           </p>
           {botEnabled && (
             <p
@@ -54,7 +51,7 @@ export function ContactSection() {
                 margin: "12px 0 0",
               }}
             >
-              AI 分身由大模型与我的真实项目资料驱动，欢迎抛硬核技术问题。
+              想快速了解？也可以问问右下角的 AI 分身——由大模型与我的真实项目资料驱动。
             </p>
           )}
         </div>

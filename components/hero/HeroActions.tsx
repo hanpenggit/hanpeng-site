@@ -4,7 +4,6 @@ import type { Links } from "@/lib/types";
 import { TrackedLink } from "@/components/ui/TrackedLink";
 import { EmailButton } from "@/components/ui/EmailButton";
 import { LinkedInIcon, GitHubIcon, YouTubeIcon } from "@/components/ui/icons";
-import { useChat } from "@/components/chat/ChatProvider";
 
 const circle: React.CSSProperties = {
   display: "inline-flex",
@@ -20,7 +19,6 @@ const circle: React.CSSProperties = {
 };
 
 export function HeroActions({ links }: { links: Links }) {
-  const { openChat, enabled } = useChat();
   return (
     <div
       style={{
@@ -53,9 +51,13 @@ export function HeroActions({ links }: { links: Links }) {
         查看族记 ↗
       </TrackedLink>
 
-      {enabled && (
-        <button
-          onClick={openChat}
+      {/* AI stays a bottom-corner easter egg (chat launcher) — the Hero CTA
+          pair is product + GitHub, so the two entries never compete. */}
+      {links.github && (
+        <TrackedLink
+          href={links.github}
+          event="github_clicked"
+          newTab
           className="h-ghost"
           style={{
             display: "inline-flex",
@@ -69,19 +71,13 @@ export function HeroActions({ links }: { links: Links }) {
             color: "var(--text-hi)",
             fontSize: 14,
             fontWeight: 500,
+            textDecoration: "none",
             transition: "border-color .15s",
           }}
         >
-          <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: "var(--pass)",
-            }}
-          />
-          问问 hanpeng
-        </button>
+          <GitHubIcon />
+          GitHub
+        </TrackedLink>
       )}
 
       <div style={{ display: "flex", gap: 9, marginLeft: 2 }}>

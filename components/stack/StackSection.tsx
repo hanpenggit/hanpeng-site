@@ -17,7 +17,7 @@ export function StackSection() {
           display: "flex",
           alignItems: "center",
           gap: 16,
-          marginBottom: 34,
+          marginBottom: 26,
         }}
       >
         <h2
@@ -28,7 +28,7 @@ export function StackSection() {
             letterSpacing: "-.01em",
           }}
         >
-          技术栈
+          Stack
         </h2>
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
@@ -41,7 +41,7 @@ export function StackSection() {
             style={{
               display: "grid",
               gap: 24,
-              padding: "18px 0",
+              padding: "14px 0",
               borderTop: "1px solid var(--line)",
               alignItems: "start",
             }}
@@ -66,9 +66,9 @@ export function StackSection() {
                     key={s}
                     className="h-chip"
                     style={{
-                      fontSize: 13,
+                      fontSize: 12.5,
                       color: "var(--text-hi)",
-                      padding: "5px 12px",
+                      padding: "4px 10px",
                       border: "1px solid var(--line)",
                       borderRadius: 6,
                       background: "var(--surface)",

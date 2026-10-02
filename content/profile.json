@@ -28,7 +28,7 @@
       "email": "hanpeng.jack@qq.com",
       "emailHref": "mailto:hanpeng.jack@qq.com",
       "linkedin": "",
-      "github": "",
+      "github": "https://github.com/hanpenggit",
       "youtube": "",
       "resume": "/resume.pdf",
       "scheduleCall": "",
@@ -36,9 +36,9 @@
     }
   },
   "headlineMetrics": [
-    { "lead": "", "value": 10, "suffix": "+", "label": "年开发经验", "detail": "Java · 大数据 · 全栈 · AI", "tone": "brand" },
-    { "lead": "", "value": 1, "suffix": "", "label": "个正在打磨的产品", "detail": "族记 · 家族树应用", "tone": "pass" },
-    { "lead": "", "value": 100, "suffix": "%", "label": "独立端到端交付", "detail": "设计 · 开发 · 上线", "tone": "brand" }
+    { "lead": "", "value": 10, "suffix": "+", "label": "Years Engineering", "detail": "Java · 大数据 · 全栈 · AI", "tone": "brand" },
+    { "lead": "", "value": 1, "suffix": "", "label": "Main Product", "detail": "族记 · Family Knowledge Network", "tone": "pass" },
+    { "lead": "AI", "value": 0, "suffix": "", "label": "Builder", "detail": "LLM · RAG · Agent · Vision", "tone": "brand" }
   ],
   "build": {
     "title": "What I Build",
@@ -135,6 +135,8 @@
   "projects": [
     {
       "name": "族记",
+      "subtitle": "Family Knowledge Network",
+      "featured": true,
       "year": "2022 – 至今",
       "role": "独立开发",
       "metric": "hanpeng.xyz",
@@ -208,6 +210,7 @@
   ],
   "aiLab": {
     "title": "AI Lab",
+    "tagline": "Exploring AI beyond chat.",
     "description": "探索 AI 如何真正进入软件工程与真实产品——不止于调用 API。",
     "experiments": [
       {
@@ -276,7 +279,7 @@
   },
   "certifications": [],
   "chatbot": {
-    "enabled": true,
+    "enabled": false,
     "displayName": "问问 hanpeng",
     "subtitle": "hanpeng 的 AI 分身",
     "greeting": "嗨，我是 hanpeng 的 AI 形态。关于他的工作、项目「族记」或接下来要做的事，随便问我，我会答得简短干脆。想深入了解某件事？说一声就行。",
