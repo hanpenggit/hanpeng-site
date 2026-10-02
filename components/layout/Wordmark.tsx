@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-// The nav wordmark morphs from the playful "heyo whatsup 👋" into "韩鹏"
+// The nav wordmark morphs from the playful "heyo whatsup 👋" into "hanpeng"
 // once the hero name has scrolled completely past the sticky nav, and morphs
 // back on the way up. Driven by an IntersectionObserver on the hero <h1>.
 // Off the landing page there is no hero, so it just settles on the name.
@@ -43,7 +43,7 @@ export function Wordmark() {
   return (
     <a
       href={onHome ? "#top" : "/"}
-      aria-label={onHome ? "韩鹏 — 回到顶部" : "韩鹏 — 返回首页"}
+      aria-label={onHome ? "hanpeng — 回到顶部" : "hanpeng — 返回首页"}
       style={{ textDecoration: "none", color: "var(--text-hi)" }}
     >
       <span style={{ display: "inline-grid", alignItems: "center" }}>

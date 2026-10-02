@@ -11,7 +11,7 @@ export function ResumeButton({ href }: { href: string }) {
     logEvent("resume_viewed");
     const a = document.createElement("a");
     a.href = href;
-    a.download = "Han_Peng_Resume.pdf";
+    a.download = "hanpeng_resume.pdf";
     a.rel = "noopener";
     document.body.appendChild(a);
     a.click();

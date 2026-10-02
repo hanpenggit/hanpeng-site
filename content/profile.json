@@ -2,12 +2,12 @@
   "meta": {
     "version": "1.3.0",
     "lastUpdated": "2026-10-02",
-    "note": "整站唯一数据源。网站界面与“问问 韩鹏”聊天机器人都读取此文件。只在这里改，不要在组件代码里改。",
+    "note": "整站唯一数据源。网站界面与“问问 hanpeng”聊天机器人都读取此文件。只在这里改，不要在组件代码里改。",
     "siteUrl": "https://me.hanpeng.xyz",
     "siteUrlNote": "本站在 Cloudflare 上的正式访问地址（canonical / sitemap / OG / JSON-LD 都用它）。部署到真实域名后改成那个域名，例如 https://hanpeng.xyz 或 https://hanpeng-site.xxx.workers.dev。注意：它和 identity.links.website（族记产品站）是两回事，不要混用。"
   },
   "identity": {
-    "name": "韩鹏",
+    "name": "hanpeng",
     "title": "全栈开发工程师 & AI 工程师",
     "taglineLead": "写好代码，",
     "taglineAccent": "做有生命力的产品。",
@@ -16,7 +16,7 @@
     "location": "中国郑州",
     "locationShort": "郑州",
     "summary": "全栈开发工程师 & AI 工程师，拥有 10 年开发经验：2014–2022 在北京从事 Java 后端与大数据开发，2022 年起在郑州独立开发。从零到一独立交付产品的完整经验，覆盖产品设计、前后端开发、部署运维与 AI 能力集成。目前全职投入族谱 / 家族树应用「族记」（hanpeng.xyz），擅长 Java / TypeScript / React / Next.js / Node.js / PostgreSQL 与大数据组件（Hadoop、Hive、Spark、Kafka），以及把 LLM、RAG、智能体工作流落到真实产品中。",
-    "about": "韩鹏是一名拥有 10 年经验的开发工程师 & AI 工程师，喜欢独立把想法变成能长期运营的产品。他目前正在郑州全职打造「族记」——一个族谱 / 家族树应用，帮助家族共同记录成员、辈分关系与家族故事：从产品设计、族谱数据建模、家族树可视化，到前后端开发与部署运维，全部独立完成。在此之前（2014–2022），他在北京做了八年 Java 后端开发，深度参与业务系统、离线数据仓库与实时数据管道的建设，从普通开发成长为核心模块负责人。他的技术主线是 Java 后端与大数据起步，近年转向 TypeScript 生态（React、Next.js、Node.js）加 PostgreSQL，并持续关注 LLM、RAG 与智能体工作流。他的一贯原则是：先想清楚用户和场景，再写代码；交付可靠、有数据支撑、可持续迭代的产品。",
+    "about": "hanpeng是一名拥有 10 年经验的开发工程师 & AI 工程师，喜欢独立把想法变成能长期运营的产品。他目前正在郑州全职打造「族记」——一个族谱 / 家族树应用，帮助家族共同记录成员、辈分关系与家族故事：从产品设计、族谱数据建模、家族树可视化，到前后端开发与部署运维，全部独立完成。在此之前（2014–2022），他在北京做了八年 Java 后端开发，深度参与业务系统、离线数据仓库与实时数据管道的建设，从普通开发成长为核心模块负责人。他的技术主线是 Java 后端与大数据起步，近年转向 TypeScript 生态（React、Next.js、Node.js）加 PostgreSQL，并持续关注 LLM、RAG 与智能体工作流。他的一贯原则是：先想清楚用户和场景，再写代码；交付可靠、有数据支撑、可持续迭代的产品。",
     "openTo": [
       "全栈开发工程师",
       "AI 工程师 / AI 应用开发",
@@ -152,16 +152,16 @@
   "certifications": [],
   "chatbot": {
     "enabled": false,
-    "displayName": "问问 韩鹏",
-    "subtitle": "韩鹏 的 AI 分身",
-    "greeting": "嗨，我是韩鹏的 AI 形态。关于他的工作、项目「族记」或接下来要做的事，随便问我，我会答得简短干脆。想深入了解某件事？说一声就行。",
+    "displayName": "问问 hanpeng",
+    "subtitle": "hanpeng 的 AI 分身",
+    "greeting": "嗨，我是hanpeng的 AI 形态。关于他的工作、项目「族记」或接下来要做的事，随便问我，我会答得简短干脆。想深入了解某件事？说一声就行。",
     "suggestedQuestions": [
       "族记是个什么产品？",
       "他的技术栈是什么？",
       "他怎么做 AI 落地？",
       "他现在对新机会开放吗？"
     ],
-    "escalationNote": "遇到我答不了的，可以给韩鹏发邮件：hanpeng.jack@qq.com"
+    "escalationNote": "遇到我答不了的，可以给hanpeng发邮件：hanpeng.jack@qq.com"
   },
   "analytics": {
     "note": "浏览量/访客/来源/设备通过 Vercel Web Analytics 自动采集。下面是用 track() 埋点的自定义按钮点击事件。",

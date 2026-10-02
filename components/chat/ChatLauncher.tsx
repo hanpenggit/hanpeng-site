@@ -7,7 +7,7 @@ export function ChatLauncher({ onOpen }: { onOpen: () => void }) {
     <button
       onClick={onOpen}
       className="h-launcher"
-      aria-label="打开 问问 韩鹏 聊天"
+      aria-label="打开 问问 hanpeng 聊天"
       style={{
         position: "fixed",
         right: 24,
@@ -34,7 +34,7 @@ export function ChatLauncher({ onOpen }: { onOpen: () => void }) {
             color: "var(--text-hi)",
           }}
         >
-          问问 韩鹏
+          问问 hanpeng
         </span>
         <span
           style={{

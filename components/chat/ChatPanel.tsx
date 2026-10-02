@@ -119,7 +119,7 @@ export function ChatPanel({
 
       if (res.status === 429) {
         finishLast(
-          "暂时达到消息上限了——可以直接给韩鹏发邮件：hanpeng.jack@qq.com",
+          "暂时达到消息上限了——可以直接给hanpeng发邮件：hanpeng.jack@qq.com",
         );
         return;
       }
@@ -343,9 +343,9 @@ export function ChatPanel({
           ref={inputRef}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="问问 韩鹏 的工作…"
+          placeholder="问问 hanpeng 的工作…"
           maxLength={MAX_INPUT}
-          aria-label="问问关于 韩鹏 的工作"
+          aria-label="问问关于 hanpeng 的工作"
           className="chat-input"
           style={{
             flex: 1,

@@ -1,8 +1,8 @@
 <div align="center">
 
-# 韩鹏 · 个人网站
+# hanpeng · 个人网站
 
-**全栈开发工程师 & AI 工程师的个人站。** 单页作品集 + 一个只依据我真实资料回答问题的 AI 助手「问问 韩鹏」。
+**全栈开发工程师 & AI 工程师的个人站。** 单页作品集 + 一个只依据我真实资料回答问题的 AI 助手「问问 hanpeng」。
 
 [在线访问](https://me.hanpeng.xyz) · [族记（在做产品）](https://hanpeng.xyz) · 邮箱 hanpeng.jack@qq.com
 
@@ -16,7 +16,7 @@ Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全�
 
 - **内容单一数据源** —— `content/profile.json`：个人信息、经历、项目、技能、指标、机器人文案全在里面，改完不用碰组件代码。
 - **关于 / 经历 / 项目 / 技术栈 / 联系** 五个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
-- **「问问 韩鹏」AI 助手** —— 走 OpenRouter 流式输出，system prompt 只用 `profile.json` 的事实，按 IP 限流 + 长度/token 上限；未配密钥时优雅降级成邮箱引导。
+- **「问问 hanpeng」AI 助手** —— 走 OpenRouter 流式输出，system prompt 只用 `profile.json` 的事实，按 IP 限流 + 长度/token 上限；未配密钥时优雅降级成邮箱引导。
 - **简历按钮** —— `public/resume.pdf`，可由 `npm run resume` 从 `profile.json` 重新生成，永远不会和网页内容脱节。
 - **隐私友好统计** —— Cloudflare Web Analytics（无 cookie、无需同意弹窗）看浏览量和 Core Web Vitals；按钮点击走自有的 `/api/event`，落在 Worker 日志里。
 - **深浅色主题**、圆形揭示动画、自定义指针、`prefers-reduced-motion` 全支持、320px 起响应式、中文有专门字体兜底。

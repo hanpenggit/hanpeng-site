@@ -1,6 +1,6 @@
 # Roadmap — 上线与后续优化
 
-**站点：** 韩鹏个人站（`hanpeng-site`，Cloudflare Workers）
+**站点：** hanpeng个人站（`hanpeng-site`，Cloudflare Workers）
 **Last updated:** 2026-10-01
 
 这是一份「已经建好之后」的清单：先把线上链路收口，再按优先级补内容。

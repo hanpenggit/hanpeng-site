@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { profile } from "@/lib/profile";
 
-// 韩鹏's avatar for "问问 韩鹏" — a circular crop of the same headshot used in
+// hanpeng's avatar for "问问 hanpeng" — a circular crop of the same headshot used in
 // the hero, so the bot and the page read as the same person. (It used to point
 // at the template author's memoji.)
 export function Avatar({

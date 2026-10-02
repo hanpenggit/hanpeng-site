@@ -1,6 +1,6 @@
 import { Index } from "@upstash/vector";
 
-// Semantic retrieval over 韩鹏's private writing (ingested into Upstash Vector
+// Semantic retrieval over hanpeng's private writing (ingested into Upstash Vector
 // with the built-in text-embedding-3-small). If the env vars are absent the
 // chatbot still works — it just answers from profile.json without the extra
 // context. Edge-compatible (fetch-based), like the other Upstash clients.

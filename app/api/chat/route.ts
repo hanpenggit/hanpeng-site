@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   const { success } = await limit(ip);
   if (!success) {
     return text(
-      "You've hit the message limit for now — reach 韩鹏 on LinkedIn or book a call.",
+      "You've hit the message limit for now — reach hanpeng on LinkedIn or book a call.",
       429,
     );
   }
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
     );
   }
 
-  // 4) retrieve relevant passages from 韩鹏's writing (no-op if unconfigured)
+  // 4) retrieve relevant passages from hanpeng's writing (no-op if unconfigured)
   const context = await retrieveContext(lastMsg.content);
 
   // 5) stream from OpenRouter (OpenAI-compatible)
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
         "HTTP-Referer": profile.identity.links.website,
         // Header values must be Latin-1 (ASCII) — a non-ASCII char (e.g. an
         // em-dash) makes fetch throw before the request is even sent.
-        "X-Title": "问问 韩鹏 - hanpeng.xyz",
+        "X-Title": "问问 hanpeng - hanpeng.xyz",
       },
       body: JSON.stringify({
         model: MODEL,

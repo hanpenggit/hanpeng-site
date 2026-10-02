@@ -80,7 +80,7 @@ export function HeroActions({ links }: { links: Links }) {
               background: "var(--pass)",
             }}
           />
-          问问 韩鹏
+          问问 hanpeng
         </button>
       )}
 
