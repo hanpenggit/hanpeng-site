@@ -102,6 +102,8 @@ export interface BuildGroup {
 
 export interface ProfileBuild {
   title: string;
+  /** English accent label rendered next to the Chinese title, e.g. "What I Build". */
+  titleEn?: string;
   description: string;
   groups: BuildGroup[];
 }
@@ -115,6 +117,8 @@ export interface AiExperiment {
 
 export interface AiLab {
   title: string;
+  /** English accent label rendered next to the Chinese title, e.g. "AI Lab". */
+  titleEn?: string;
   /** Short mono accent line above the description, e.g. "Exploring AI beyond chat." */
   tagline?: string;
   description: string;

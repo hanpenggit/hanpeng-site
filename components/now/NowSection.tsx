@@ -42,8 +42,20 @@ export function NowSection() {
             letterSpacing: "-.01em",
           }}
         >
-          Now
+          近况
         </h2>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11.5,
+            letterSpacing: ".14em",
+            textTransform: "uppercase",
+            color: "var(--text-lo)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Now
+        </span>
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
         <span
           style={{

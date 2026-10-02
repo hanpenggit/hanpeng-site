@@ -34,8 +34,20 @@ export function ProjectsSection() {
             letterSpacing: "-.01em",
           }}
         >
-          Selected Work
+          精选项目
         </h2>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11.5,
+            letterSpacing: ".14em",
+            textTransform: "uppercase",
+            color: "var(--text-lo)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Selected Work
+        </span>
         <span
           className="section-rule"
           style={{ flex: 1, height: 1, background: "var(--line)" }}

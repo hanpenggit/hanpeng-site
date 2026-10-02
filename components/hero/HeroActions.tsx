@@ -93,18 +93,8 @@ export function HeroActions({ links }: { links: Links }) {
             <LinkedInIcon />
           </TrackedLink>
         )}
-        {links.github && (
-          <TrackedLink
-            href={links.github}
-            event="github_clicked"
-            newTab
-            ariaLabel="GitHub"
-            className="h-social"
-            style={circle}
-          >
-            <GitHubIcon />
-          </TrackedLink>
-        )}
+        {/* GitHub lives in the prominent ghost button above — a second circle
+            icon here just duplicates the entry. */}
         {links.youtube && (
           <TrackedLink
             href={links.youtube}

@@ -41,7 +41,8 @@
     { "lead": "AI", "value": 0, "suffix": "", "label": "Builder", "detail": "LLM · RAG · Agent · Vision", "tone": "brand" }
   ],
   "build": {
-    "title": "What I Build",
+    "title": "核心方向",
+    "titleEn": "What I Build",
     "description": "从想法到上线，从模型到生产环境——三条主线，端到端打通。",
     "groups": [
       {
@@ -209,7 +210,8 @@
     }
   ],
   "aiLab": {
-    "title": "AI Lab",
+    "title": "AI 实验室",
+    "titleEn": "AI Lab",
     "tagline": "Exploring AI beyond chat.",
     "description": "探索 AI 如何真正进入软件工程与真实产品——不止于调用 API。",
     "experiments": [

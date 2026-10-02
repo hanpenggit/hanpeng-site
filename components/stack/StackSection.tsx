@@ -28,8 +28,20 @@ export function StackSection() {
             letterSpacing: "-.01em",
           }}
         >
-          Stack
+          技术栈
         </h2>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11.5,
+            letterSpacing: ".14em",
+            textTransform: "uppercase",
+            color: "var(--text-lo)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Tech Stack
+        </span>
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
 

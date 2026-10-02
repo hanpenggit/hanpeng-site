@@ -27,6 +27,20 @@ export function BuildSection() {
         >
           {build.title}
         </h2>
+        {build.titleEn && (
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11.5,
+              letterSpacing: ".14em",
+              textTransform: "uppercase",
+              color: "var(--text-lo)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {build.titleEn}
+          </span>
+        )}
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
       <p

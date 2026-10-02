@@ -27,8 +27,20 @@ export function PhilosophySection() {
             letterSpacing: "-.01em",
           }}
         >
-          Engineering Philosophy
+          工程理念
         </h2>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11.5,
+            letterSpacing: ".14em",
+            textTransform: "uppercase",
+            color: "var(--text-lo)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Philosophy
+        </span>
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
 

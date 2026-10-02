@@ -5,12 +5,12 @@ import { NavLinks } from "@/components/layout/NavLinks";
 import { MobileNav } from "@/components/layout/MobileNav";
 
 const NAV_LINKS = [
-  { label: "Work", href: "#projects" },
+  { label: "项目", href: "#projects" },
   { label: "AI Lab", href: "#ai-lab" },
-  { label: "Experience", href: "#work" },
-  { label: "Now", href: "#now" },
-  { label: "Stack", href: "#stack" },
-  { label: "Contact", href: "#contact" },
+  { label: "工作经历", href: "#work" },
+  { label: "近况", href: "#now" },
+  { label: "技术栈", href: "#stack" },
+  { label: "联系", href: "#contact" },
 ];
 
 export function Nav() {

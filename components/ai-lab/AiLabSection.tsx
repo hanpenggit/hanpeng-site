@@ -27,21 +27,35 @@ export function AiLabSection() {
         >
           {lab.title}
         </h2>
-        {lab.tagline && (
+        {lab.titleEn && (
           <span
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: 12,
-              letterSpacing: ".08em",
-              color: "var(--brand-soft)",
+              fontSize: 11.5,
+              letterSpacing: ".14em",
+              textTransform: "uppercase",
+              color: "var(--text-lo)",
               whiteSpace: "nowrap",
             }}
           >
-            {lab.tagline}
+            {lab.titleEn}
           </span>
         )}
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
+      {lab.tagline && (
+        <p
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 12.5,
+            letterSpacing: ".06em",
+            color: "var(--brand-soft)",
+            margin: "0 0 8px",
+          }}
+        >
+          {lab.tagline}
+        </p>
+      )}
       <p
         style={{
           fontSize: 14,
