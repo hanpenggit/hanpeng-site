@@ -8,7 +8,7 @@ export function BuildSection() {
   if (!build || build.groups.length === 0) return null;
 
   return (
-    <section id="build" style={{ padding: "56px 0 8px", scrollMarginTop: 88 }}>
+    <section id="build" style={{ padding: "46px 0 8px", scrollMarginTop: 88 }}>
       <div
         style={{
           display: "flex",

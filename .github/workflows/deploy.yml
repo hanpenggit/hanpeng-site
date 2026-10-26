@@ -24,14 +24,26 @@ jobs:
 
       - run: npm ci
 
+      - name: Content and Cloudflare preflight
+        run: npm run check:content
+
+      - name: Chat security regression tests
+        run: npm run test:security
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
       - name: Build for Cloudflare Workers (OpenNext)
         run: npm run build:cf
         env:
           NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://my.hanpeng.xyz' }}
           NEXT_PUBLIC_CF_BEACON_TOKEN: ${{ vars.NEXT_PUBLIC_CF_BEACON_TOKEN }}
-          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
 
-      # Secrets (never in the repo): OPENROUTER_API_KEY, UPSTASH_* are set with
+      # Runtime secrets (never in the repo): OPENROUTER_API_KEY, TURNSTILE_SECRET_KEY etc. set with
       # `wrangler secret put` — see README. This action only needs the API token
       # and account id, configured as repository secrets.
       - name: Deploy

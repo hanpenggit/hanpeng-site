@@ -13,68 +13,18 @@ const bracket: React.CSSProperties = {
 export function Hero() {
   const { identity } = profile;
   return (
-    <section className="hero-section" style={{ padding: "70px 0 34px", scrollMarginTop: 88 }}>
-      <div
-        className="hero-grid"
-        style={{
-          display: "flex",
-          gap: 44,
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-        }}
-      >
-        {/* minWidth: 0 — a 300px floor here overflowed 320px screens (the old
-            `minWidth: 300` + page padding = 332px > 320px viewport). */}
-        <div style={{ flex: "1 1 480px", minWidth: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              marginBottom: 22,
-            }}
-          >
-            <span style={{ width: 26, height: 1, background: "var(--pass)" }} />
-            <span
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 12,
-                letterSpacing: ".16em",
-                textTransform: "uppercase",
-                color: "var(--pass)",
-              }}
-            >
-              {identity.title}
-            </span>
+    <section className="hero-section" style={{ scrollMarginTop: 88 }}>
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <div className="hero-kicker-row">
+            <span className="hero-kicker-rule" aria-hidden="true" />
+            <span className="hero-title-kicker">{identity.title}</span>
           </div>
           {identity.roleLine && (
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 12,
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                color: "var(--text-lo)",
-                marginBottom: 18,
-                marginTop: -12,
-                paddingLeft: 40,
-              }}
-            >
-              {identity.roleLine}
-            </div>
+            <div className="hero-role-line">{identity.roleLine}</div>
           )}
 
-          <h1
-            id="hero-name"
-            style={{
-              fontFamily: "var(--display)",
-              fontWeight: 400,
-              fontSize: "clamp(62px, 9vw, 100px)",
-              lineHeight: 0.98,
-              letterSpacing: "-.02em",
-              marginBottom: 18,
-            }}
-          >
+          <h1 id="hero-name" className="hero-name">
             {identity.name}
             <span
               aria-hidden="true"
@@ -87,17 +37,7 @@ export function Hero() {
             </span>
           </h1>
 
-          <p
-            style={{
-              fontFamily: "var(--display)",
-              fontWeight: 400,
-              fontSize: "clamp(28px, 3.6vw, 38px)",
-              lineHeight: 1.18,
-              letterSpacing: "-.01em",
-              marginBottom: 14,
-              maxWidth: "18ch",
-            }}
-          >
+          <p className="hero-tagline">
             {identity.taglineLead}
             <br />
             <span
@@ -111,48 +51,17 @@ export function Hero() {
             </span>
           </p>
 
-          <p
-            style={{
-              fontSize: 16,
-              lineHeight: 1.6,
-              color: "var(--text-lo)",
-              maxWidth: "50ch",
-              marginBottom: 26,
-            }}
-          >
-            {identity.heroSummary}
-          </p>
+          <p className="hero-summary">{identity.heroSummary}</p>
 
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 9,
-              padding: "7px 14px",
-              border: "1px solid color-mix(in srgb, var(--pass) 35%, var(--line))",
-              borderRadius: 999,
-              background: "color-mix(in srgb, var(--pass) 9%, transparent)",
-              marginBottom: 30,
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "var(--pass)",
-                animation: "ssPulse 2.4s ease-in-out infinite",
-              }}
-            />
-            <span style={{ fontSize: 13.5, color: "var(--text-hi)" }}>
-              {identity.availability}
-            </span>
+          <div className="hero-availability">
+            <span className="hero-availability-dot" aria-hidden="true" />
+            <span>{identity.availability}</span>
           </div>
 
           <HeroActions links={identity.links} />
         </div>
 
-        <div className="hero-portrait-frame" style={{ flex: "0 0 auto", position: "relative", padding: 14 }}>
+        <div className="hero-portrait-frame">
           <span style={{ ...bracket, top: 0, left: 0, borderTop: "1.5px solid var(--brand)", borderLeft: "1.5px solid var(--brand)" }} />
           <span style={{ ...bracket, top: 0, right: 0, borderTop: "1.5px solid var(--brand)", borderRight: "1.5px solid var(--brand)" }} />
           <span style={{ ...bracket, bottom: 0, left: 0, borderBottom: "1.5px solid var(--brand)", borderLeft: "1.5px solid var(--brand)" }} />
@@ -164,48 +73,14 @@ export function Hero() {
             height={744}
             priority
             quality={75}
-            // Display box is 232px, but request a much larger source so the photo
-            // stays razor-sharp on hi-DPI/retina screens.
-            sizes="(max-width: 640px) 220px, (max-width: 1000px) 232px, 260px"
-            style={{
-              display: "block",
-              width: "min(260px, 100%)",
-              height: "auto",
-              aspectRatio: "25 / 31",
-              objectFit: "cover",
-              borderRadius: 6,
-              border: "1px solid var(--line)",
-              filter: "grayscale(.15)",
-            }}
+            // The requested width matches the CSS display box, not the source
+            // image dimensions. Next/Image can still serve high-DPI variants.
+            sizes="(max-width: 640px) 188px, (max-width: 780px) 204px, 204px"
+            className="hero-portrait-image"
           />
-          <div
-            style={{
-              position: "absolute",
-              left: 14,
-              right: 14,
-              bottom: 14,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "7px 11px",
-              background: "color-mix(in srgb, var(--bg) 78%, transparent)",
-              backdropFilter: "blur(6px)",
-              WebkitBackdropFilter: "blur(6px)",
-              borderTop: "1px solid var(--line)",
-              fontFamily: "var(--font-mono)",
-              fontSize: 10.5,
-              color: "var(--text-lo)",
-            }}
-          >
+          <div className="hero-portrait-caption">
             <span>{identity.locationShort}</span>
-            <span
-              style={{
-                color: "var(--pass)",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
+            <span className="hero-portrait-online">
               <NavigationIcon />
               在线
             </span>

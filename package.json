@@ -1,6 +1,6 @@
 {
   "name": "hanpeng-site",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "private": true,
   "description": "韩鹏 的个人网站 — 全栈开发工程师 & AI 工程师。Next.js + 由 profile.json 驱动的“问问 韩鹏”AI 助手，部署在 Cloudflare Workers。",
   "license": "MIT",

@@ -4,7 +4,7 @@ import type { HeadlineMetric } from "@/lib/types";
 // layout shift or reduced-motion special case just to show three numbers.
 export function HeadlineMetrics({ metrics }: { metrics: HeadlineMetric[] }) {
   return (
-    <div style={{ marginTop: 54 }}>
+    <div className="hero-metrics">
       <div className="metrics-grid" style={{ display: "grid", gap: 0 }}>
         {metrics.map((m, i) => {
           const color = m.tone === "pass" ? "var(--pass)" : "var(--brand-soft)";
