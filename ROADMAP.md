@@ -9,7 +9,7 @@
 
 ## Phase 0 — 收口线上链路（待办，按这个顺序）
 
-1. **确认正式域名**：现在 `meta.siteUrl` 是占位值 `https://me.hanpeng.xyz`。域名定下来后改 `content/profile.json → meta.siteUrl`（一处生效：canonical / sitemap / OG / JSON-LD）。注意不要把族记产品站的 `hanpeng.xyz` 填到这里。
+1. **确认正式域名**：当前 `meta.siteUrl` 使用 `https://my.hanpeng.xyz`（发布前确认实际域名）。域名有变化时改 `content/profile.json → meta.siteUrl`（一处生效：canonical / sitemap / OG / JSON-LD）。注意不要把族记产品站的 `hanpeng.xyz` 填到这里。
 2. **配 Cloudflare 密钥**（不会进仓库）：
    ```bash
    npx wrangler secret put OPENROUTER_API_KEY

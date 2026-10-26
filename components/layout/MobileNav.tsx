@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 import type { Links } from "@/lib/types";
@@ -35,6 +35,9 @@ export function MobileNav({
   links: Links;
 }) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -48,10 +51,37 @@ export function MobileNav({
     };
   }, [open]);
 
+  // Keep keyboard focus inside an open modal menu; return it to the launcher.
+  useEffect(() => {
+    if (!open) return;
+    closeRef.current?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const focusables = menuRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusables?.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => {
+      document.removeEventListener("keydown", trap);
+      triggerRef.current?.focus();
+    };
+  }, [open]);
+
   // close on Escape, and auto-close if the viewport grows to desktop
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    const onResize = () => window.innerWidth > 720 && setOpen(false);
+    const onResize = () => window.innerWidth > 960 && setOpen(false);
     window.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
     return () => {
@@ -80,6 +110,7 @@ export function MobileNav({
   return (
     <div className="nav-mobile">
       <button
+        ref={triggerRef}
         className="hamburger"
         aria-label="打开菜单"
         aria-expanded={open}
@@ -94,16 +125,19 @@ export function MobileNav({
       {mounted &&
         createPortal(
           <div
+            ref={menuRef}
             id="mobile-menu"
             className="mobile-menu"
             data-open={open}
             role="dialog"
-            aria-modal="true"
+            aria-modal={open}
+            aria-hidden={!open}
             aria-label="导航菜单"
           >
         <div className="mobile-menu-top">
           <span className="mobile-menu-brand">菜单</span>
           <button
+            ref={closeRef}
             className="hamburger is-x"
             aria-label="关闭菜单"
             onClick={() => setOpen(false)}

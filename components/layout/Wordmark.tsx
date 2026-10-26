@@ -10,10 +10,12 @@ import { usePathname } from "next/navigation";
 export function Wordmark() {
   const pathname = usePathname();
   const onHome = pathname === "/";
-  const [scrolled, setScrolled] = useState(!onHome);
+  const [scrolled, setScrolled] = useState(false);
+  const showBrand = !onHome || scrolled;
 
   useEffect(() => {
     const target = document.getElementById("hero-name");
+    if (!onHome) return;
     if (!target || !("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver(
       ([entry]) => setScrolled(!entry.isIntersecting),
@@ -22,7 +24,7 @@ export function Wordmark() {
     );
     io.observe(target);
     return () => io.disconnect();
-  }, []);
+  }, [onHome, pathname]);
 
   const base: React.CSSProperties = {
     gridArea: "1 / 1",
@@ -51,10 +53,10 @@ export function Wordmark() {
           aria-hidden="true"
           style={{
             ...base,
-            opacity: scrolled ? 0 : 1,
-            transform: scrolled ? "translateY(-8px)" : "translateY(0)",
-            filter: scrolled ? "blur(4px)" : "blur(0)",
-            pointerEvents: scrolled ? "none" : "auto",
+            opacity: showBrand ? 0 : 1,
+            transform: showBrand ? "translateY(-8px)" : "translateY(0)",
+            filter: showBrand ? "blur(4px)" : "blur(0)",
+            pointerEvents: showBrand ? "none" : "auto",
           }}
         >
           你好呀{" "}
@@ -64,10 +66,10 @@ export function Wordmark() {
           aria-hidden="true"
           style={{
             ...base,
-            opacity: scrolled ? 1 : 0,
-            transform: scrolled ? "translateY(0)" : "translateY(8px)",
-            filter: scrolled ? "blur(0)" : "blur(4px)",
-            pointerEvents: scrolled ? "auto" : "none",
+            opacity: showBrand ? 1 : 0,
+            transform: showBrand ? "translateY(0)" : "translateY(8px)",
+            filter: showBrand ? "blur(0)" : "blur(4px)",
+            pointerEvents: showBrand ? "auto" : "none",
           }}
         >
           han peng

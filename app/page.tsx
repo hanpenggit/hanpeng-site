@@ -21,10 +21,11 @@ export default function Home() {
     <ChatProvider chatbot={profile.chatbot}>
       <Nav />
       <main
-        id="top"
+        id="main-content"
         className="main-pad"
         style={{ maxWidth: 1120, margin: "0 auto", padding: "0 clamp(20px, 5vw, 32px)" }}
       >
+        <span id="top" className="anchor-top" aria-hidden="true" />
         <Hero />
         <BuildSection />
         <ProjectsSection />

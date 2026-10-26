@@ -10,11 +10,11 @@ const { identity, projects } = profile;
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Every project ${identity.name} has shipped — product, analytics, blockchain, and QA automation work with the outcomes attached.`,
+  description: `${identity.name} 的完整项目作品集，涵盖独立产品、AI 工程实验与个人基础设施。`,
   alternates: { canonical: "/projects" },
   openGraph: {
     title: `Projects · ${identity.name}`,
-    description: `The full project list — ${projects.length} builds with the outcomes attached.`,
+    description: `从独立产品到 AI 工程实践，查看 ${projects.length} 个项目与技术探索。`,
     url: "/projects",
     type: "website",
   },
@@ -25,10 +25,11 @@ export default function ProjectsPage() {
     <ChatProvider chatbot={profile.chatbot}>
       <Nav />
       <main
-        id="top"
+        id="main-content"
         className="main-pad"
         style={{ maxWidth: 1120, margin: "0 auto", padding: "0 clamp(20px, 5vw, 32px)" }}
       >
+        <span id="top" className="anchor-top" aria-hidden="true" />
         <section style={{ padding: "48px 0 24px" }}>
           <Link
             href="/#projects"
@@ -44,7 +45,7 @@ export default function ProjectsPage() {
               transition: "color .15s",
             }}
           >
-            <span aria-hidden="true">←</span> back home
+            <span aria-hidden="true">←</span> 返回首页
           </Link>
 
           <div
@@ -64,7 +65,7 @@ export default function ProjectsPage() {
                 letterSpacing: "-.01em",
               }}
             >
-              all projects
+              所有项目
             </h1>
             <span
               className="section-rule"
@@ -78,7 +79,7 @@ export default function ProjectsPage() {
                 whiteSpace: "nowrap",
               }}
             >
-              {projects.length} total
+              共 {projects.length} 项
             </span>
           </div>
 
@@ -90,8 +91,7 @@ export default function ProjectsPage() {
               color: "var(--text-lo)",
             }}
           >
-            Everything I&rsquo;ve shipped, with the outcome attached. Hit
-            &ldquo;details&rdquo; on any card for the longer story.
+            产品研发、AI 工程实践与基础设施建设。从问题出发，记录真实的架构选择、实现过程和持续迭代。点击项目卡片中的「详情」查看更多。
           </p>
 
           <ProjectGrid projects={projects} />

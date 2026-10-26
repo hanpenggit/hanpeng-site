@@ -16,7 +16,7 @@
 ## 找我
 
 - 邮箱：hanpeng.jack@qq.com
-- 个人站：<https://me.hanpeng.xyz>
+- 个人站：<https://my.hanpeng.xyz>
 - 在做产品：[族记](https://hanpeng.xyz)
 
 开放：全栈开发工程师 / AI 工程师岗位、独立产品开发合作、外包与技术顾问。

@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { Chatbot } from "@/lib/types";
 import { logEvent } from "@/lib/analytics";
 import { Avatar } from "./Avatar";
+import { TurnstileChallenge } from "./TurnstileChallenge";
 
 type Msg = { role: "user" | "assistant"; text: string; done: boolean };
 
 const MAX_INPUT = 280;
+// Public identifier only; secret verification stays in the Cloudflare Worker.
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? "";
 
 // Render message text with any URLs turned into clickable links. The Google
 // Calendar booking link and LinkedIn get friendly labels instead of raw URLs.
@@ -67,6 +70,14 @@ export function ChatPanel({
   const [draft, setDraft] = useState("");
   const [asked, setAsked] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [challengeToken, setChallengeToken] = useState<string | null>(null);
+  const [challengeRevision, setChallengeRevision] = useState(0);
+  const [challengeError, setChallengeError] = useState(false);
+  const handleChallenge = useCallback((token: string | null) => {
+    setChallengeToken(token);
+    if (token) setChallengeError(false);
+  }, []);
+  const handleChallengeError = useCallback(() => setChallengeError(true), []);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -81,7 +92,10 @@ export function ChatPanel({
 
   async function send(raw?: string) {
     const q = (raw ?? draft).trim();
-    if (!q || busy) return;
+    if (!q || busy || !challengeToken) return;
+    const onceToken = challengeToken;
+    setChallengeToken(null);
+    setChallengeRevision((n) => n + 1);
     logEvent("chat_message_sent");
 
     const history = messages.concat([{ role: "user", text: q, done: true }]);
@@ -113,7 +127,9 @@ export function ChatPanel({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          messages: history.map((m) => ({ role: m.role, content: m.text })),
+          // Keep both the turn count and total text under server-side limits.
+          messages: history.slice(-6).map((m) => ({ role: m.role, content: m.text.slice(-480) })),
+          turnstileToken: onceToken,
         }),
       });
 
@@ -123,12 +139,16 @@ export function ChatPanel({
         );
         return;
       }
+      if (res.status === 403) {
+        finishLast("人机验证未通过，请完成新的验证后再试。");
+        return;
+      }
       if (!res.ok || !res.body) {
         finishLast(chatbot.escalationNote);
         return;
       }
 
-      // Stream tokens in as they arrive (Edge runtime streams reliably).
+      // Stream tokens in as they arrive (Workers supports streamed responses).
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let got = false;
@@ -307,6 +327,7 @@ export function ChatPanel({
             <button
               key={q}
               onClick={() => send(q)}
+              disabled={busy || !challengeToken}
               className="h-suggestion"
               style={{
                 padding: "7px 12px",
@@ -324,6 +345,25 @@ export function ChatPanel({
           ))}
         </div>
       )}
+
+      {/* Verify every request; tokens expire in five minutes and are single-use. */}
+      <div style={{ padding: "8px 14px", borderTop: "1px solid var(--line)", fontSize: 11.5, color: "var(--text-lo)" }}>
+        {TURNSTILE_SITE_KEY ? (
+          <>
+            <TurnstileChallenge
+              siteKey={TURNSTILE_SITE_KEY}
+              revision={challengeRevision}
+              onToken={handleChallenge}
+              onError={handleChallengeError}
+            />
+            <span role="status">
+              {challengeError ? "验证组件加载失败，请刷新页面后再试。" : challengeToken ? "安全验证已通过，可以发送消息。" : "正在进行 Cloudflare 安全验证…"}
+            </span>
+          </>
+        ) : (
+          <span role="status">AI 助手尚未配置安全验证，请通过邮箱联系。</span>
+        )}
+      </div>
 
       {/* input */}
       <form
@@ -344,6 +384,7 @@ export function ChatPanel({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="问问 hanpeng 的工作…"
+          disabled={busy || !challengeToken}
           maxLength={MAX_INPUT}
           aria-label="问问关于 hanpeng 的工作"
           className="chat-input"
@@ -363,7 +404,7 @@ export function ChatPanel({
         <button
           type="submit"
           aria-label="发送"
-          disabled={busy}
+          disabled={busy || !challengeToken}
           className="h-send"
           style={{
             flex: "0 0 auto",
@@ -374,8 +415,8 @@ export function ChatPanel({
             background: "var(--brand)",
             color: "#fff",
             fontSize: 15,
-            cursor: busy ? "default" : "pointer",
-            opacity: busy ? 0.6 : 1,
+            cursor: busy || !challengeToken ? "default" : "pointer",
+            opacity: busy || !challengeToken ? 0.5 : 1,
             transition: "background .15s",
           }}
         >

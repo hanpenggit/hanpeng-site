@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "2.0.0",
-    "lastUpdated": "2026-10-02",
+    "lastUpdated": "2026-10-25",
     "note": "整站唯一数据源。网站界面与“问问 hanpeng”聊天机器人都读取此文件。只在这里改，不要在组件代码里改。",
     "siteUrl": "https://my.hanpeng.xyz",
     "siteUrlNote": "本站在 Cloudflare 上的正式访问地址（canonical / sitemap / OG / JSON-LD 都用它）。注意：它和 identity.links.website（族记产品站 hanpeng.xyz）是两回事，不要混用。"
@@ -281,7 +281,7 @@
   },
   "certifications": [],
   "chatbot": {
-    "enabled": false,
+    "enabled": true,
     "displayName": "问问 hanpeng",
     "subtitle": "hanpeng 的 AI 分身",
     "greeting": "嗨，我是 hanpeng 的 AI 形态。关于他的工作、项目「族记」或接下来要做的事，随便问我，我会答得简短干脆。想深入了解某件事？说一声就行。",

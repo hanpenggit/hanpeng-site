@@ -24,7 +24,7 @@ const linkStyle: React.CSSProperties = {
 export function NavLinks({ links }: { links: NavLink[] }) {
   const pathname = usePathname();
   return (
-    <nav style={{ display: "flex", alignItems: "center", gap: 4 }}>
+    <nav aria-label="页面导航" style={{ display: "flex", alignItems: "center", gap: 4 }}>
       {links.map((l) => {
         const href = sectionHref(pathname, l.href);
         return href.startsWith("#") ? (

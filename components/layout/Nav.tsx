@@ -36,7 +36,7 @@ export function Nav() {
           height: 64,
           display: "flex",
           alignItems: "center",
-          gap: 24,
+          gap: 14,
         }}
       >
         <Wordmark />

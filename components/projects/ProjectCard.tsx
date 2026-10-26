@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import type { Project } from "@/lib/types";
 import { logEvent } from "@/lib/analytics";
 
@@ -9,6 +9,7 @@ export function ProjectCard({ project }: { project: Project }) {
   // pointer leaves. Clicking pins it, and a pinned card ignores the pointer
   // entirely. `suppressed` stops a click-to-close from being undone instantly
   // by the pointer that is still sitting on the card.
+  const detailsId = useId();
   const [pinned, setPinned] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [suppressed, setSuppressed] = useState(false);
@@ -156,6 +157,7 @@ export function ProjectCard({ project }: { project: Project }) {
       <button
         onClick={toggle}
         aria-expanded={expanded}
+        aria-controls={detailsId}
         className="h-toggle"
         style={{
           alignSelf: "flex-start",
@@ -189,6 +191,8 @@ export function ProjectCard({ project }: { project: Project }) {
           cursor silently flips from a hand to an I-beam while you hold still.
           Growing downward keeps everything above it anchored. */}
       <div
+        id={detailsId}
+        aria-hidden={!expanded}
         style={{
           display: "grid",
           gridTemplateRows: expanded ? "1fr" : "0fr",

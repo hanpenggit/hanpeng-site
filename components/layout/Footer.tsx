@@ -24,7 +24,8 @@ export function Footer() {
         <span>
           © {year} {profile.identity.name}
         </span>
-        <span>用 ❤ 和 next.js 构建</span>
+        <span>独立构建 · 让想法落地</span>
+        <a className="footer-back" href="#top" aria-label="返回页面顶部">返回顶部 ↑</a>
       </div>
     </footer>
   );

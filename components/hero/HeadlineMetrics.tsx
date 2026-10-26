@@ -1,61 +1,11 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import type { HeadlineMetric } from "@/lib/types";
 
+// Important data stays in server-rendered HTML: no hydration, timer, observer,
+// layout shift or reduced-motion special case just to show three numbers.
 export function HeadlineMetrics({ metrics }: { metrics: HeadlineMetric[] }) {
-  const [counts, setCounts] = useState<number[]>(() => metrics.map(() => 0));
-  const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const targets = metrics.map((m) => m.value);
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (reduce) {
-      setCounts(targets);
-      return;
-    }
-
-    let raf = 0;
-    const run = () => {
-      if (started.current) return;
-      started.current = true;
-      const dur = 1100;
-      const t0 = performance.now();
-      const tick = (now: number) => {
-        const t = Math.min(1, (now - t0) / dur);
-        const e = 1 - Math.pow(1 - t, 3);
-        setCounts(targets.map((v) => v * e));
-        if (t < 1) raf = requestAnimationFrame(tick);
-      };
-      raf = requestAnimationFrame(tick);
-    };
-
-    const el = ref.current;
-    if (!el || !("IntersectionObserver" in window)) {
-      run();
-      return () => cancelAnimationFrame(raf);
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((en) => en.isIntersecting)) {
-          run();
-          io.disconnect();
-        }
-      },
-      { threshold: 0.3 },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, [metrics]);
-
   return (
-    <div style={{ marginTop: 54, borderTop: "1px solid var(--line)" }}>
-      <div ref={ref} className="metrics-grid" style={{ display: "grid", gap: 0 }}>
+    <div style={{ marginTop: 54 }}>
+      <div className="metrics-grid" style={{ display: "grid", gap: 0 }}>
         {metrics.map((m, i) => {
           const color = m.tone === "pass" ? "var(--pass)" : "var(--brand-soft)";
           const showDivider = (i + 1) % 3 !== 0;
@@ -93,9 +43,7 @@ export function HeadlineMetrics({ metrics }: { metrics: HeadlineMetric[] }) {
                 }}
               >
                 {m.lead}
-                {/* value 0 marks a non-numeric metric (e.g. "AI Builder") —
-                    lead/suffix alone carry it, no counter */}
-                {m.value > 0 && Math.round(counts[i] ?? 0)}
+                {m.value > 0 && m.value}
                 {m.suffix}
               </div>
               <div

@@ -1,19 +1,13 @@
 import { buildSystemPrompt } from "@/lib/system-prompt";
-import { retrieveContext } from "@/lib/retrieval";
 import { profile } from "@/lib/profile";
-import { limit } from "@/lib/ratelimit";
+import { hasChatLimiter, limitEdge, limitGlobal } from "@/lib/ratelimit";
+import { getSiteUrl } from "@/lib/site";
+import { readTextWithLimit } from "@/lib/request";
+import { isAllowedOrigin, MAX_REQUEST_BYTES, validateMessages, validateTurnstileToken } from "@/lib/chat-validation";
+import { verifyTurnstile } from "@/lib/turnstile";
 
-// Edge runtime streams token-by-token reliably (unlike the Node serverless
-// runtime, which buffered the stream and timed out).
-export const runtime = "edge";
-export const maxDuration = 30;
-
-const MAX_CHARS = 1000; // per user message
-const MAX_MESSAGES = 20; // per conversation
-// .trim() guards against keys/slugs pasted with a stray space or newline.
-const MODEL = (process.env.OPENROUTER_MODEL ?? "anthropic/claude-3.5-haiku").trim();
-
-type ClientMessage = { role: "user" | "assistant"; content: string };
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const encoder = new TextEncoder();
 
@@ -23,149 +17,138 @@ function text(message: string, status = 200): Response {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
     },
   });
 }
 
-export async function POST(req: Request) {
-  // 1) rate limit by IP
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "anon";
-  const { success } = await limit(ip);
-  if (!success) {
-    return text(
-      "You've hit the message limit for now — reach hanpeng on LinkedIn or book a call.",
-      429,
-    );
+export async function POST(req: Request): Promise<Response> {
+  if (!profile.chatbot.enabled) return text("Not found.", 404);
+
+  const siteUrl = getSiteUrl();
+  if (!isAllowedOrigin(req.headers.get("origin"), siteUrl)) return text("Forbidden.", 403);
+  if (!(req.headers.get("content-type") ?? "").toLowerCase().startsWith("application/json")) {
+    return text("Unsupported Media Type.", 415);
+  }
+  const apiKey = process.env.OPENROUTER_API_KEY?.trim();
+  const challengeSecret = process.env.TURNSTILE_SECRET_KEY?.trim();
+  if (!apiKey || !challengeSecret || !hasChatLimiter()) {
+    return text("AI 助手正在维护中，请稍后再试。", 503);
   }
 
-  // 2) parse + validate
-  let messages: ClientMessage[];
+  const declaredLength = Number(req.headers.get("content-length") ?? 0);
+  if (!Number.isFinite(declaredLength) || declaredLength > MAX_REQUEST_BYTES) return text("Request too large.", 413);
+
+  let messages;
+  let token;
   try {
-    const body = await req.json();
-    messages = body?.messages;
+    const raw = await readTextWithLimit(req, MAX_REQUEST_BYTES);
+    if (raw === null) return text("Request too large.", 413);
+    const parsed: unknown = JSON.parse(raw);
+    const body = parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed as Record<string, unknown> : null;
+    messages = validateMessages(body?.messages);
+    token = validateTurnstileToken(body?.turnstileToken);
   } catch {
     return text("Invalid request.", 400);
   }
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return text("Invalid request.", 400);
-  }
-  const trimmed = messages.slice(-MAX_MESSAGES).filter(
-    (m): m is ClientMessage =>
-      !!m &&
-      (m.role === "user" || m.role === "assistant") &&
-      typeof m.content === "string",
-  );
-  const lastMsg = trimmed.at(-1);
-  if (!lastMsg || lastMsg.role !== "user") {
-    return text("Invalid request.", 400);
-  }
-  if (lastMsg.content.length > MAX_CHARS) {
-    return text("Message too long.", 400);
+  if (!messages || !token) return text("Invalid request.", 400);
+
+  // Never accept x-forwarded-for or a caller-selected rate key.
+  const remoteIp = req.headers.get("cf-connecting-ip");
+  const identifier = remoteIp || "unknown";
+  if (!(await limitEdge(identifier))) return text("访问频率过高，请稍后再试。", 429);
+
+  const hostname = new URL(siteUrl).hostname;
+  if (!(await verifyTurnstile(token, challengeSecret, hostname, remoteIp))) {
+    return text("人机验证未通过，请重新验证后再试。", 403);
   }
 
-  // 3) no key configured → graceful escalation (keeps local dev + previews alive)
-  const apiKey = process.env.OPENROUTER_API_KEY?.trim();
-  if (!apiKey) {
-    return text(
-      `The live assistant isn't configured in this environment yet. ${profile.chatbot.escalationNote}`,
-    );
-  }
+  if (!(await limitGlobal(identifier))) return text("访问频率过高，请稍后再试。", 429);
 
-  // 4) retrieve relevant passages from hanpeng's writing (no-op if unconfigured)
-  const context = await retrieveContext(lastMsg.content);
-
-  // 5) stream from OpenRouter (OpenAI-compatible)
+  // Private RAG files are intentionally not retrieved into this public model prompt.
+  // Only facts already visible on the public portfolio are sent upstream.
   let upstream: Response;
   try {
     upstream = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
+      signal: AbortSignal.timeout(25_000),
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": profile.identity.links.website,
-        // Header values must be Latin-1 (ASCII) — a non-ASCII char (e.g. an
-        // em-dash) makes fetch throw before the request is even sent.
-        "X-Title": "问问 hanpeng - hanpeng.xyz",
+        "HTTP-Referer": siteUrl,
+        "X-Title": "Hanpeng Portfolio AI Assistant",
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: process.env.OPENROUTER_MODEL?.trim() || "openai/gpt-4.1-mini",
         stream: true,
-        temperature: 0.6,
-        max_tokens: 500,
-        messages: [
-          { role: "system", content: buildSystemPrompt(context) },
-          ...trimmed.map((m) => ({ role: m.role, content: m.content })),
-        ],
+        temperature: 0.4,
+        max_tokens: 400,
+        messages: [{ role: "system", content: buildSystemPrompt() }, ...messages],
       }),
     });
-  } catch (err) {
-    console.error("[chat] OpenRouter request threw:", err);
-    return text(
-      `Sorry — the assistant is unreachable right now. ${profile.chatbot.escalationNote}`,
-    );
+  } catch {
+    console.error("[chat] model unavailable");
+    return text("AI 服务暂时不可用，请稍后再试。", 502);
   }
 
   if (!upstream.ok || !upstream.body) {
-    const detail = await upstream.text().catch(() => "");
-    console.error(
-      `[chat] OpenRouter responded ${upstream.status} for model "${MODEL}":`,
-      detail.slice(0, 500),
-    );
-    return text(
-      `Sorry — the assistant hit an error. ${profile.chatbot.escalationNote}`,
-    );
+    console.error("[chat] upstream failure status:", upstream.status);
+    await upstream.body?.cancel().catch(() => {});
+    return text("AI 服务暂时不可用，请稍后再试。", 502);
   }
 
   const reader = upstream.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
-
+  let emittedChars = 0;
+  const MAX_STREAM_CHARS = 6_000;
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
-        for (;;) {
+        let doneMarker = false;
+        while (!doneMarker) {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-          for (const line of lines) {
-            const t = line.trim();
-            if (!t.startsWith("data:")) continue;
-            const data = t.slice(5).trim();
-            if (data === "[DONE]") {
-              controller.close();
-              return;
-            }
+          // Avoid accumulating unbounded upstream data or leaking provider errors.
+          if (buffer.length > 64_000) break;
+          const frames = buffer.split("\n");
+          buffer = frames.pop() ?? "";
+          for (const frame of frames) {
+            const line = frame.trim();
+            if (!line.startsWith("data:")) continue;
+            const data = line.slice(5).trim();
+            if (data === "[DONE]") { doneMarker = true; break; }
             try {
-              const json = JSON.parse(data);
-              const delta = json?.choices?.[0]?.delta?.content;
-              if (typeof delta === "string" && delta.length) {
-                controller.enqueue(encoder.encode(delta));
+              const parsed: unknown = JSON.parse(data);
+              const delta = (parsed as { choices?: { delta?: { content?: unknown } }[] })?.choices?.[0]?.delta?.content;
+              if (typeof delta === "string") {
+                const bounded = delta.slice(0, MAX_STREAM_CHARS - emittedChars);
+                if (bounded) controller.enqueue(encoder.encode(bounded));
+                emittedChars += bounded.length;
+                if (emittedChars >= MAX_STREAM_CHARS) { doneMarker = true; break; }
               }
-            } catch {
-              // ignore keep-alive / partial frames
-            }
+            } catch { /* Ignore malformed SSE and keep-alives. */ }
           }
         }
-      } catch (err) {
-        console.error("[chat] stream error:", err);
+      } catch {
+        console.error("[chat] stream interrupted");
       } finally {
-        controller.close();
+        await reader.cancel().catch(() => {});
+        try { controller.close(); } catch { /* Client disconnected. */ }
       }
     },
-    cancel() {
-      reader.cancel().catch(() => {});
-    },
+    cancel() { void reader.cancel().catch(() => {}); },
   });
 
   return new Response(stream, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "no-store",
+      "Cache-Control": "no-store, no-transform",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
     },
   });
 }

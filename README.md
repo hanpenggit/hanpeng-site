@@ -4,7 +4,7 @@
 
 **全栈开发工程师 & AI 工程师的个人站。** 单页作品集 + 一个只依据我真实资料回答问题的 AI 助手「问问 hanpeng」。
 
-[在线访问](https://me.hanpeng.xyz) · [族记（在做产品）](https://hanpeng.xyz) · 邮箱 hanpeng.jack@qq.com
+[在线访问](https://my.hanpeng.xyz) · [族记（在做产品）](https://hanpeng.xyz) · 邮箱 hanpeng.jack@qq.com
 
 </div>
 
@@ -16,7 +16,7 @@ Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全�
 
 - **内容单一数据源** —— `content/profile.json`：个人信息、经历、项目、技能、指标、机器人文案全在里面，改完不用碰组件代码。
 - **What I Build / 精选项目 / AI Lab / 工作经历 / Philosophy / Now / 技术栈 / 联系** 八个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
-- **「问问 hanpeng」AI 助手** —— 走 OpenRouter 流式输出，system prompt 只用 `profile.json` 的事实，按 IP 限流 + 长度/token 上限；未配密钥时优雅降级成邮箱引导。
+- **「问问 hanpeng」AI 助手** —— OpenRouter 流式输出；Cloudflare Turnstile（服务端验证）+ Worker 原生 Rate Limiting Binding + 可选 Upstash 全局限流；对外只发送公开个人站资料。
 - **简历生成脚本** —— `npm run resume` 可从 `profile.json` 生成 `public/resume.pdf`，与网页内容同源；按钮当前隐藏，需要时把 `identity.links.resume` 接回导航即可。
 - **隐私友好统计** —— Cloudflare Web Analytics（无 cookie、无需同意弹窗）看浏览量和 Core Web Vitals；按钮点击走自有的 `/api/event`，落在 Worker 日志里。
 - **深浅色主题**、圆形揭示动画、自定义指针、`prefers-reduced-motion` 全支持、320px 起响应式、中文有专门字体兜底。
@@ -29,53 +29,61 @@ Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全�
 | 框架 | Next.js 16（App Router）、React 19、TypeScript |
 | 样式 | Tailwind CSS v4 + CSS 变量设计令牌、`next-themes` |
 | 字体 | `next/font`（自托管）Instrument Serif / Space Grotesk / JetBrains Mono / Inter，中文回退 PingFang SC / 微软雅黑 / Noto Sans SC |
-| 聊天 | OpenRouter（OpenAI 兼容流式）经 Edge route handler |
-| 限流 | Upstash Redis + `@upstash/ratelimit`（10 条 / IP / 5 分钟） |
-| 检索（可选） | Upstash Vector，做私有文档的 RAG |
+| 聊天 | OpenRouter（OpenAI 兼容流式）经 Workers 兼容的 Node.js route handler |
+| 限流 | Cloudflare Worker Rate Limit Binding（5 次/分钟/IP/PoP）+ 可选 Upstash Redis（10 次/5 分钟/IP，全球） |
+| 检索 | 公开聊天禁用私人文档 RAG，以防泄露 |
 | 统计 | Cloudflare Web Analytics + 自建 `/api/event` |
 | 部署 | Cloudflare Workers（`@opennextjs/cloudflare` + wrangler） |
 
 > 为什么直接用 OpenRouter 的 fetch 而不是 Vercel AI SDK：路由里自己用 `ReadableStream` 拆 SSE，依赖面最小，也避免了 `ai` 与 provider 之间的版本耦合。行为一致：逐字流式、只依据 `profile.json`、限流、密钥只在服务端。
+
+## V1.3.1：公开 AI 聊天安全启用指南
+
+> **首次部署请先读 [`docs/CLOUDFLARE_SECURE_CHAT_V1.3.1.md`](docs/CLOUDFLARE_SECURE_CHAT_V1.3.1.md)**，其中包含 Turnstile、Worker Secrets、原生限流、GitHub 变量、WAF、费用限额的逐项配置步骤。
+>
+> 本版本 `chatbot.enabled=true`：公开页面会显示聊天入口。**未配置 Worker Secret/Turnstile 时，发消息被安全禁用或返回 503，绝不产生模型调用费用。**
+>
+> 模型 Key 与 Turnstile Secret 只能留在 Cloudflare Workers Secrets 中；浏览器只拥有 Turnstile 的公开 Site Key。公开 AI 不再读取任何私人 Upstash Vector 文档。
 
 ## 本地开发
 
 ```bash
 git clone https://github.com/hanpenggit/hanpeng-site.git
 cd hanpeng-site
-npm install
-cp .env.example .env.local      # 本地 UI 开发可以不填
-npm run dev                     # http://localhost:3000
+npm ci
+cp .env.example .env.local
+npm run dev
 ```
 
-不配任何环境变量也能跑：只是聊天机器人会回「发邮件找我」，限流会空转。
+聊天需要设置环境变量；不配置也不会影响个人网站的其他页面。
 
-Windows 下也可以双击 `启动网站.bat`（用 `E:/devtools` 的 Node，端口 3026）。
-
-### 环境变量
-
-| 变量 | 是否必须 | 用途 |
-|---|---|---|
-| `OPENROUTER_API_KEY` | 线上聊天需要 | 机器人模型调用（**仅服务端**） |
-| `OPENROUTER_MODEL` | 可选 | 模型 slug，默认 `anthropic/claude-3.5-haiku` |
-| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | 线上限流需要 | 按 IP 限流，防刷 |
-| `UPSTASH_VECTOR_REST_URL` / `_TOKEN` | 可选 | RAG 检索，没有就只用 profile.json |
-| `NEXT_PUBLIC_SITE_URL` | 建议 | canonical / sitemap / OG，不填则用 `meta.siteUrl` |
-| `NEXT_PUBLIC_CF_BEACON_TOKEN` | 可选 | Cloudflare Web Analytics，不填则不加载统计脚本 |
-
-`OPENROUTER_API_KEY` 只在 `app/api/chat/route.ts` 里读取，不会进浏览器包。
-
-### 脚本
+| 变量 | 作用与存放位置 |
+| --- | --- |
+| `OPENROUTER_API_KEY` | **Cloudflare Worker Secret**，服务端独用 |
+| `TURNSTILE_SECRET_KEY` | **Cloudflare Worker Secret**，服务端验证单次 token |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | **GitHub Actions Variable**（公开，可进浏览器构建） |
+| `OPENROUTER_MODEL` | 公开模型 slug，默认 `openai/gpt-4.1-mini` |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | 可选 Worker Secrets，跨 Cloudflare 节点的全球严格限流 |
+| `NEXT_PUBLIC_SITE_URL` | 建议设置为 `https://my.hanpeng.xyz` |
 
 ```bash
-npm run dev         # 本地开发
-npm run build       # 生产构建
-npm run build:cf    # 构建 Cloudflare Worker 产物（.open-next）
-npm run preview:cf  # 本地用 wrangler 预览 Worker
-npm run deploy:cf   # 部署到 Cloudflare
-npm run typecheck   # tsc --noEmit
-npm run lint        # eslint
-npm run resume      # 从 profile.json 重新生成 public/resume.pdf（需 python + reportlab）
+npm run check:content
+npm run test:security
+npm run typecheck
+npm run lint
+npm run build:cf
+npm run preview:cf
+# 验证通过后
+npm run deploy:cf
 ```
+
+`npm run dev` 不处于 Cloudflare Workers 环境，缺少原生限流绑定，因此要本地真模型对话请设置额外的 Upstash Redis。生产推荐在 Cloudflare Worker 预览或正式域名测试。Cloudflare 原生 `CHAT_RATE_LIMIT` 是 **5/分钟/IP/PoP** 的近似限制，不是额度控制；模型账号必须设置支出上限。
+
+## Cloudflare 部署
+
+`wrangler.jsonc` 保留 OpenNext + Workers，并已声明 `CHAT_RATE_LIMIT` 绑定。`main` push 自动执行 `.github/workflows/deploy.yml`：内容检查、安全测试、TypeScript、Lint、OpenNext 构建后用 Wrangler 部署。GitHub Actions 需要 `CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID` 两个 Secret，及 **`NEXT_PUBLIC_TURNSTILE_SITE_KEY`** 公共构建变量。**不要把大模型 API Key 放到 GitHub、wrangler.jsonc 或 NEXT_PUBLIC 环境变量**。
+
+完整的 Cloudflare 控制台路径见专门的 [上线手册](docs/CLOUDFLARE_SECURE_CHAT_V1.3.1.md)。
 
 ## 改内容
 
@@ -90,29 +98,12 @@ npm run resume      # 从 profile.json 重新生成 public/resume.pdf（需 pyth
 
 ## 部署（Cloudflare Workers）
 
-1. 首次在 Cloudflare 建好 Worker 资源后，**密钥用 wrangler 写入**（不会进仓库）：
-
-   ```bash
-   npx wrangler secret put OPENROUTER_API_KEY
-   npx wrangler secret put UPSTASH_REDIS_REST_URL
-   npx wrangler secret put UPSTASH_REDIS_REST_TOKEN
-   npx wrangler secret put UPSTASH_VECTOR_REST_URL     # 可选
-   npx wrangler secret put UPSTASH_VECTOR_REST_TOKEN   # 可选
-   ```
-
-2. 本地部署：`npm run build:cf && npm run deploy:cf`（wrangler 会读 `wrangler.jsonc`，Worker 名 `hanpeng-site`）。
-
-3. **CI 自动部署**：push 到 `main` 触发 `.github/workflows/deploy.yml`。在仓库 Settings 里配置 `CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID` 两个 secret，以及可选的变量 `NEXT_PUBLIC_SITE_URL`、`NEXT_PUBLIC_CF_BEACON_TOKEN`。
-
-4. 自定义域名：Cloudflare 面板 → Workers → `hanpeng-site` → Settings → Domains & Routes → 添加域名；然后把 `meta.siteUrl` 改成它。
-
-5. 看日志：面板 Workers → Logs，或 `npx wrangler tail`（`/api/event` 的点击事件会打印 `site_event`）。
+不需要 ECS/VPS。GitHub 自动部署（或 `npm run build:cf && npm run deploy:cf`）保留 OpenNext Workers 架构。
+**唯一需要额外操作的是：在 Cloudflare Turnstile 创建 Widget、把服务端 Secret 设置到 Worker、把公开 Site Key 设置到 GitHub Actions 的构建变量。** 具体图文式操作清单见 [安全聊天上线手册](docs/CLOUDFLARE_SECURE_CHAT_V1.3.1.md)。
 
 ## 安全
 
-- API 密钥仅服务端读取，`.env*` 已 gitignore（只提交 `.env.example` 占位）。
-- 聊天接口：按 IP 限流、单条长度上限、`max_tokens` 上限、system prompt 严格限定于 `profile.json`。配合 OpenRouter 的消费上限使用。
-- 安全响应头（`X-Content-Type-Options`、`X-Frame-Options`、`Referrer-Policy`、`Permissions-Policy`）在 `next.config.ts` 里；HSTS 建议在 Cloudflare 面板开启。
+见 [Cloudflare 安全对话上线手册](docs/CLOUDFLARE_SECURE_CHAT_V1.3.1.md)。
 
 ## 项目结构
 

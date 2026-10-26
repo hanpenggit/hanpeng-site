@@ -13,12 +13,12 @@ const bracket: React.CSSProperties = {
 export function Hero() {
   const { identity } = profile;
   return (
-    <section style={{ padding: "60px 0 30px", scrollMarginTop: 88 }}>
+    <section className="hero-section" style={{ padding: "70px 0 34px", scrollMarginTop: 88 }}>
       <div
         className="hero-grid"
         style={{
           display: "flex",
-          gap: 56,
+          gap: 44,
           alignItems: "flex-start",
           flexWrap: "wrap",
         }}
@@ -69,7 +69,7 @@ export function Hero() {
             style={{
               fontFamily: "var(--display)",
               fontWeight: 400,
-              fontSize: "clamp(56px, 8vw, 88px)",
+              fontSize: "clamp(62px, 9vw, 100px)",
               lineHeight: 0.98,
               letterSpacing: "-.02em",
               marginBottom: 18,
@@ -104,7 +104,7 @@ export function Hero() {
               style={{
                 color: "var(--pass)",
                 fontStyle: "var(--accent-style)",
-                whiteSpace: "nowrap",
+                overflowWrap: "anywhere",
               }}
             >
               {identity.taglineAccent}
@@ -152,7 +152,7 @@ export function Hero() {
           <HeroActions links={identity.links} />
         </div>
 
-        <div style={{ flex: "0 0 auto", position: "relative", padding: 14 }}>
+        <div className="hero-portrait-frame" style={{ flex: "0 0 auto", position: "relative", padding: 14 }}>
           <span style={{ ...bracket, top: 0, left: 0, borderTop: "1.5px solid var(--brand)", borderLeft: "1.5px solid var(--brand)" }} />
           <span style={{ ...bracket, top: 0, right: 0, borderTop: "1.5px solid var(--brand)", borderRight: "1.5px solid var(--brand)" }} />
           <span style={{ ...bracket, bottom: 0, left: 0, borderBottom: "1.5px solid var(--brand)", borderLeft: "1.5px solid var(--brand)" }} />
@@ -163,14 +163,15 @@ export function Hero() {
             width={600}
             height={744}
             priority
-            quality={92}
+            quality={75}
             // Display box is 232px, but request a much larger source so the photo
             // stays razor-sharp on hi-DPI/retina screens.
-            sizes="600px"
+            sizes="(max-width: 640px) 220px, (max-width: 1000px) 232px, 260px"
             style={{
               display: "block",
-              width: 232,
-              height: 288,
+              width: "min(260px, 100%)",
+              height: "auto",
+              aspectRatio: "25 / 31",
               objectFit: "cover",
               borderRadius: 6,
               border: "1px solid var(--line)",

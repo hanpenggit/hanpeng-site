@@ -20,7 +20,7 @@ This document is the proof-of-concept and engineering plan. It defines the stack
 | Chatbot transport | **Vercel AI SDK** (`ai`) + **`@openrouter/ai-sdk-provider`** | Streaming out of the box, `useChat` on the client, route handler on the server |
 | LLM | **OpenRouter** — any model via one key. Model chosen by `OPENROUTER_MODEL` env var (default a cheap fast model like `anthropic/claude-3.5-haiku` or `google/gemini-2.0-flash-001`) | One API key, hundreds of models, swap by changing an env var with no code change; small context so no RAG needed |
 | Rate limiting | **@upstash/ratelimit** + **Upstash Redis** (free tier) | Serverless-native; protects the public live key from abuse |
-| Analytics | **Cloudflare Web Analytics** beacon + 自建 `/api/event` | 页面浏览 / Core Web Vitals 由官方 beacon 采集（无 cookie、免同意弹窗）；按钮点击走自己的 Edge route，落在 Worker 日志里。无第三方追踪 |
+| Analytics | **Cloudflare Web Analytics** beacon + 自建 `/api/event` | 页面浏览 / Core Web Vitals 由官方 beacon 采集（无 cookie、免同意弹窗）；按钮点击走自己的 Workers Node.js route，落在 Worker 日志里。无第三方追踪 |
 | Hosting | **Cloudflare Workers** via `@opennextjs/cloudflare` + wrangler | 站点实际部署目标；密钥用 `wrangler secret put` |
 | Package manager | **npm**（仓库提交 `package-lock.json`） | CI 用 `npm ci` |
 
@@ -246,7 +246,7 @@ Use the AI SDK `useChat` hook in `ChatPanel.tsx`. Wire `chatbot.suggestedQuestio
 ### Analytics (small + privacy-friendly)
 Use **Cloudflare Web Analytics** — `components/layout/CloudflareAnalytics.tsx` 在 `NEXT_PUBLIC_CF_BEACON_TOKEN` 存在时注入官方 beacon（`static.cloudflareinsights.com`）。它只负责页面浏览、访客、来源、设备和 Core Web Vitals。
 
-> 注意：Cloudflare Web Analytics **不支持自定义事件**，所以按钮点击不能走 beacon。`lib/analytics.ts` 的处理顺序是：先试 Zaraz（`zaraz.track`，在 Cloudflare 面板启用后生效），否则用 `navigator.sendBeacon` 打到本站的 `/api/event`（Edge route，只写 Worker 日志，可用 `wrangler tail` 或面板 Workers → Logs 查看）。两者都没配时静默空转，不影响交互。
+> 注意：Cloudflare Web Analytics **不支持自定义事件**，所以按钮点击不能走 beacon。`lib/analytics.ts` 的处理顺序是：先试 Zaraz（`zaraz.track`，在 Cloudflare 面板启用后生效），否则用 `navigator.sendBeacon` 打到本站的 `/api/event`（Workers Node.js route，只写 Worker 日志，可用 `wrangler tail` 或面板 Workers → Logs 查看）。两者都没配时静默空转，不影响交互。
 
 事件名集中在 `lib/analytics.ts`，与 `profile.json → analytics.events` 保持一致：
 

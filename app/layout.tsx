@@ -73,11 +73,13 @@ export const metadata: Metadata = {
     title: `${identity.name} — ${identity.title}`,
     description: identity.heroSummary,
     locale: "zh_CN",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${identity.name} 个人网站` }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${identity.name} — ${identity.title}`,
     description: identity.heroSummary,
+    images: ["/opengraph-image"],
   },
   icons: {
     icon: [
@@ -128,6 +130,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className={fontVars} suppressHydrationWarning>
       <body>
+        <a className="skip-link" href="#main-content">跳转到主要内容</a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

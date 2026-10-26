@@ -45,7 +45,7 @@
 ## 4. AI 分身（核心差异化）
 
 - 开关：`chatbot.enabled`（缺省视为开启，与 ChatProvider 语义一致）。
-- 后端：Edge route → OpenRouter 流式输出；Upstash Redis 按 IP 限流；可选 Upstash Vector RAG。
+- 后端：Workers Node.js route → OpenRouter 流式输出；Upstash Redis 按 IP 限流；可选 Upstash Vector RAG。
 - 数据边界：system prompt 只注入 `profile.json` 事实 + 可选私有文档检索；跑题引导至邮件。
 - 产品角色：它不是彩蛋，而是"这个网站本身就是一个 AI 应用"的证明。
 
