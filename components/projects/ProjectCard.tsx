@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import type { Project } from "@/lib/types";
 import { logEvent } from "@/lib/analytics";
+import { ProjectCaseStudy } from "./ProjectCaseStudy";
 
 export function ProjectCard({ project }: { project: Project }) {
   // Two ways a card opens. Hovering is a peek: it closes itself the moment the
@@ -74,14 +75,14 @@ export function ProjectCard({ project }: { project: Project }) {
               gap: 6,
               padding: "4px 12px",
               borderRadius: 999,
-              background: "color-mix(in srgb, var(--pass) 14%, transparent)",
-              color: "var(--pass)",
+              background: "color-mix(in srgb, var(--brand-soft) 10%, transparent)",
+              color: "var(--brand-soft)",
               fontFamily: "var(--font-mono)",
               fontSize: 11.5,
               fontWeight: 500,
             }}
           >
-            ✓ {project.metric}
+            <span aria-hidden="true">●</span> {project.stage ?? project.metric}
           </span>
         )}
         <span
@@ -267,6 +268,11 @@ export function ProjectCard({ project }: { project: Project }) {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+            {project.caseStudy && (
+              <div style={{ marginTop: 15 }}>
+                <ProjectCaseStudy data={project.caseStudy} />
               </div>
             )}
             {project.links && project.links.length > 0 && (

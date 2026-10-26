@@ -51,7 +51,7 @@ export function ContactSection() {
               发邮件。
             </span>
             <br />
-            一般会在一天内回复。
+            我会尽快回复。
           </p>
           {botEnabled && (
             <p
@@ -63,7 +63,7 @@ export function ContactSection() {
                 margin: "12px 0 0",
               }}
             >
-              想快速了解？也可以问问右下角的 AI 分身——由大模型与我的真实项目资料驱动。
+              想快速了解？也可以问问右下角的 AI 导览助手——只根据网站公开资料回答，不代表本人承诺。
             </p>
           )}
         </div>

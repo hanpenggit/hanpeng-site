@@ -29,7 +29,14 @@ assert.equal(new Set(data.projects.map((p) => p.name)).size, data.projects.lengt
 for (const [i, project] of data.projects.entries()) {
   assert.ok(project.name && project.blurb && project.detail, `projects[${i}]: missing title/detail`);
   for (const link of project.links ?? []) absoluteUrl(link.href, `projects[${i}].links`);
+  assert.ok(project.stage?.trim(), `projects[${i}]: must have an explicit stage`);
+  assert.ok(project.caseStudy, `projects[${i}]: missing case study`);
+  for (const field of ["challenge", "approach", "progress"]) {
+    assert.ok(project.caseStudy[field]?.trim()?.length >= 10, `projects[${i}].caseStudy.${field}: missing or too short`);
+  }
 }
+assert.ok(data.projects.some((p) => p.name === "AI Workflow OS" && p.stage === "研发中"), "AI Workflow OS must be transparently marked as in development");
+assert.equal(data.headlineMetrics.some((m) => m.value === 0), false, "Do not display confusing zero metrics");
 assert.ok(Array.isArray(data.aiLab.experiments));
 assert.ok(Array.isArray(data.build.groups));
 assert.ok(Array.isArray(data.experience));

@@ -2,6 +2,7 @@
 
 import type { Project } from "@/lib/types";
 import { logEvent } from "@/lib/analytics";
+import { ProjectCaseStudy } from "./ProjectCaseStudy";
 
 // Featured project — the hero card. One full-width, visually weighted card for
 // the main product (族记), so the landing page has a clear protagonist instead
@@ -43,7 +44,7 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
             color: "var(--brand-soft)",
           }}
         >
-          {project.role} · Featured
+          {project.role} · {project.stage ?? "精选"}
         </span>
         <span
           style={{
@@ -168,6 +169,12 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {project.caseStudy && (
+        <div style={{ marginTop: 22 }}>
+          <ProjectCaseStudy data={project.caseStudy} />
         </div>
       )}
 

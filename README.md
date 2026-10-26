@@ -2,7 +2,7 @@
 
 # hanpeng · 个人网站
 
-**全栈开发工程师 & AI 工程师的个人站。** 单页作品集 + 一个只依据我真实资料回答问题的 AI 助手「问问 hanpeng」。
+**全栈开发工程师 & AI 工程师的个人站。** 个人作品集 + AI Workflow OS 研发案例 + 一个只依据本站公开资料回答问题的 AI 导览助手「问问 hanpeng」。
 
 [在线访问](https://my.hanpeng.xyz) · [族记（在做产品）](https://hanpeng.xyz) · 邮箱 hanpeng.jack@qq.com
 
@@ -15,7 +15,7 @@ Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全�
 ## 特性
 
 - **内容单一数据源** —— `content/profile.json`：个人信息、经历、项目、技能、指标、机器人文案全在里面，改完不用碰组件代码。
-- **What I Build / 精选项目 / AI Lab / 工作经历 / Philosophy / Now / 技术栈 / 联系** 八个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
+- **What I Build / 精选项目（含研发中的 AI Workflow OS）/ AI Lab / 工作经历 / Philosophy / Now / 技术栈 / 联系** 八个区块，空数据（教育、证书）会自动隐藏，不会出现空白面板。
 - **「问问 hanpeng」AI 助手** —— OpenRouter 流式输出；Cloudflare Turnstile（服务端验证）+ Worker 原生 Rate Limiting Binding + 可选 Upstash 全局限流；对外只发送公开个人站资料。
 - **简历生成脚本** —— `npm run resume` 可从 `profile.json` 生成 `public/resume.pdf`，与网页内容同源；按钮当前隐藏，需要时把 `identity.links.resume` 接回导航即可。
 - **隐私友好统计** —— Cloudflare Web Analytics（无 cookie、无需同意弹窗）看浏览量和 Core Web Vitals；按钮点击走自有的 `/api/event`，落在 Worker 日志里。
@@ -35,7 +35,7 @@ Next.js 16（App Router）+ React 19 + Tailwind v4 的单页站点，内容全�
 | 统计 | Cloudflare Web Analytics + 自建 `/api/event` |
 | 部署 | Cloudflare Workers（`@opennextjs/cloudflare` + wrangler） |
 
-> 为什么直接用 OpenRouter 的 fetch 而不是 Vercel AI SDK：路由里自己用 `ReadableStream` 拆 SSE，依赖面最小，也避免了 `ai` 与 provider 之间的版本耦合。行为一致：逐字流式、只依据 `profile.json`、限流、密钥只在服务端。
+> 为什么直接用 OpenRouter 的 fetch 而不是 Vercel AI SDK：路由里自己用 `ReadableStream` 拆 SSE，依赖面最小，也避免了 `ai` 与 provider 之间的版本耦合。行为一致：逐字流式、只依据公开 `profile.json`、限流、密钥只在服务端。
 
 ## V1.3.1：公开 AI 聊天安全启用指南
 
@@ -126,3 +126,9 @@ docs/           PRD / 设计说明 / 技术规格
 <div align="center">
 <sub>Next.js 构建，内容在 JSON 里，部署在 Cloudflare Workers。</sub>
 </div>
+
+## V1.3.2 内容维护说明
+
+网站现在展示族记、AI Workflow OS、AI Engineering Lab 和 Personal Infrastructure 四个项目。每个项目包含 `stage`、`caseStudy`（问题、方案、进度），需要在 `content/profile.json` 中维护。AI Workflow OS 标记为 **研发中**，请不要把实验结果写成生产上线或未经核实的性能收益。
+
+本次改动细节与公开内容边界见 `docs/CONTENT_REVIEW_V1.3.2.md`。如果使用 Cloudflare 自带的 Git 自动部署，不需要提交 `.github/workflows`；但公开 Turnstile Site Key 必须在 Cloudflare 的 **Build variables** 配置，私密 API Key 与 Turnstile Secret 仍只放 Worker 的 **Runtime Secrets**。

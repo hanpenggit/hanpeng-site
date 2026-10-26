@@ -4,7 +4,7 @@ import { ProjectGrid } from "./ProjectGrid";
 import { ViewAllProjectsLink } from "./ViewAllProjectsLink";
 
 // The landing page shows a curated slice; /projects has the rest.
-const FEATURED_COUNT = 6;
+const FEATURED_COUNT = 3;
 
 export function ProjectsSection() {
   const featured = profile.projects.slice(0, FEATURED_COUNT);
@@ -54,6 +54,9 @@ export function ProjectsSection() {
         />
         {hasMore && <ViewAllProjectsLink count={profile.projects.length} />}
       </div>
+      <p style={{ fontSize: 13.5, lineHeight: 1.75, color: "var(--text-lo)", maxWidth: "62ch", margin: "0 0 10px" }}>
+        不只展示使用了什么技术，也记录要解决的问题、设计方案与目前进展。研发中的工程会明确标注状态。
+      </p>
       {hero && (
         <div style={{ marginTop: 16 }}>
           <FeaturedProjectCard project={hero} />

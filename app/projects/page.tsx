@@ -9,7 +9,7 @@ import { ProjectGrid } from "@/components/projects/ProjectGrid";
 const { identity, projects } = profile;
 
 export const metadata: Metadata = {
-  title: "Projects",
+  title: "项目案例",
   description: `${identity.name} 的完整项目作品集，涵盖独立产品、AI 工程实验与个人基础设施。`,
   alternates: { canonical: "/projects" },
   openGraph: {
@@ -91,7 +91,7 @@ export default function ProjectsPage() {
               color: "var(--text-lo)",
             }}
           >
-            产品研发、AI 工程实践与基础设施建设。从问题出发，记录真实的架构选择、实现过程和持续迭代。点击项目卡片中的「详情」查看更多。
+            这里收录独立产品、AI 工作流研发、模型实验和基础设施实践。每个项目区分问题、设计取舍与当前状态；“研发中”不等于已生产发布。点击项目卡片中的「详情」查看实践摘要。
           </p>
 
           <ProjectGrid projects={projects} />

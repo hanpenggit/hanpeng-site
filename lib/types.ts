@@ -142,6 +142,13 @@ export interface NowData {
   items: NowItem[];
 }
 
+export interface ProjectCaseStudy {
+  /** Public-safe explanation: problem, approach and current state. */
+  challenge: string;
+  approach: string;
+  progress: string;
+}
+
 export interface Project {
   name: string;
   /** English subtitle, e.g. "Family Knowledge Network" — shown under the name. */
@@ -151,11 +158,14 @@ export interface Project {
   year: string;
   role: string;
   metric: string;
+  /** Explicit development status; never imply all projects are shipped. */
+  stage?: string;
   tags: string[];
   blurb: string;
   detail: string;
   /** Optional "架构亮点" bullets shown in the expanded panel. */
   highlights?: Highlight[];
+  caseStudy?: ProjectCaseStudy;
   // Live site / repo, shown inside the expanded detail panel.
   links?: ProjectLink[];
 }
